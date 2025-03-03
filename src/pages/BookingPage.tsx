@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, CalendarIcon, InfoIcon, Users, Clock, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, CalendarIcon, InfoIcon, Users, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { usePassData } from '@/hooks/usePassData';
@@ -29,6 +29,8 @@ const BookingPage = () => {
     idType: 'aadhar',
     idNumber: '',
   });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [formTouched, setFormTouched] = useState<Record<string, boolean>>({});
   
   // Setup real-time pass updates
   useEffect(() => {
@@ -38,6 +40,13 @@ const BookingPage = () => {
       if (currentPass) {
         setPass(currentPass);
         setLoading(false);
+        
+        // Welcome toast for booking page
+        toast({
+          title: `Booking ${currentPass.type} Pass`,
+          description: `For ${format(currentPass.date, 'EEEE, MMMM d, yyyy')}`,
+          duration: 3000,
+        });
       } else {
         toast({
           title: "Pass not found",
@@ -69,25 +78,118 @@ const BookingPage = () => {
             variant: "destructive",
           });
         }
+        
+        // If the pass is now sold out
+        if (updatedPass.availableSlots === 0) {
+          toast({
+            title: "Pass Sold Out",
+            description: "This pass is no longer available. You will be redirected to the passes page.",
+            variant: "destructive",
+          });
+          
+          // Redirect after a short delay
+          setTimeout(() => {
+            navigate('/passes');
+          }, 3000);
+        }
       }
     }, 2000);
     
     return () => clearInterval(interval);
-  }, [passId, visitors, getPassById, toast]);
+  }, [passId, visitors, getPassById, toast, navigate]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    setFormTouched(prev => ({ ...prev, [name]: true }));
+    
+    // Simple validation
+    validateField(name, value);
+  };
+  
+  const validateField = (name: string, value: string) => {
+    const newErrors = { ...formErrors };
+    
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          newErrors[name] = 'Name is required';
+        } else if (value.trim().length < 3) {
+          newErrors[name] = 'Name must be at least 3 characters';
+        } else {
+          delete newErrors[name];
+        }
+        break;
+      case 'email':
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!value.trim()) {
+          newErrors[name] = 'Email is required';
+        } else if (!emailRegex.test(value)) {
+          newErrors[name] = 'Please enter a valid email';
+        } else {
+          delete newErrors[name];
+        }
+        break;
+      case 'phone':
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!value.trim()) {
+          newErrors[name] = 'Phone number is required';
+        } else if (!phoneRegex.test(value)) {
+          newErrors[name] = 'Please enter a valid 10-digit phone number';
+        } else {
+          delete newErrors[name];
+        }
+        break;
+      case 'idNumber':
+        if (!value.trim()) {
+          newErrors[name] = 'ID number is required';
+        } else if (value.trim().length < 6) {
+          newErrors[name] = 'Please enter a valid ID number';
+        } else {
+          delete newErrors[name];
+        }
+        break;
+      default:
+        break;
+    }
+    
+    setFormErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  const validateForm = () => {
+    // Mark all fields as touched
+    const allTouched = Object.keys(formData).reduce((acc, key) => ({
+      ...acc,
+      [key]: true
+    }), {});
+    setFormTouched(allTouched);
+    
+    // Validate all fields
+    let isValid = true;
+    Object.entries(formData).forEach(([key, value]) => {
+      if (typeof value === 'string' && !validateField(key, value)) {
+        isValid = false;
+      }
+    });
+    
+    return isValid;
   };
   
   const handleSelectChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
+    setFormTouched(prev => ({ ...prev, [name]: true }));
   };
   
   const handleVisitorChange = (action: 'increase' | 'decrease') => {
     if (action === 'increase') {
       if (pass && visitors < pass.availableSlots) {
         setVisitors(prev => prev + 1);
+        toast({
+          title: "Visitor Added",
+          description: `Booking for ${visitors + 1} visitors.`,
+          duration: 2000,
+        });
       } else {
         toast({
           title: "Maximum limit reached",
@@ -98,12 +200,27 @@ const BookingPage = () => {
     } else {
       if (visitors > 1) {
         setVisitors(prev => prev - 1);
+        toast({
+          title: "Visitor Removed",
+          description: `Now booking for ${visitors - 1} visitors.`,
+          duration: 2000,
+        });
       }
     }
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form
+    if (!validateForm()) {
+      toast({
+        title: "Form Incomplete",
+        description: "Please fill all required fields correctly.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     // Check if pass is still available
     const currentPass = getPassById(Number(passId));
@@ -116,6 +233,13 @@ const BookingPage = () => {
       return;
     }
     
+    // Success feedback
+    toast({
+      title: "Booking Successful!",
+      description: "Proceeding to payment page...",
+      duration: 3000,
+    });
+    
     // Book the pass (reduce available slots)
     bookPass(Number(passId), visitors);
     
@@ -123,7 +247,9 @@ const BookingPage = () => {
     const bookingId = Math.floor(100000 + Math.random() * 900000);
     
     // Navigate to payment page with the booking ID
-    navigate(`/payment/${bookingId}`);
+    setTimeout(() => {
+      navigate(`/payment/${bookingId}`);
+    }, 1500);
   };
   
   if (loading || passDataLoading) {
@@ -284,7 +410,11 @@ const BookingPage = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
+                      className={formTouched.name && formErrors.name ? "border-red-500" : ""}
                     />
+                    {formTouched.name && formErrors.name && (
+                      <p className="text-sm text-red-500 mt-1">{formErrors.name}</p>
+                    )}
                   </div>
                   
                   <div className="space-y-2">
@@ -297,7 +427,11 @@ const BookingPage = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
+                      className={formTouched.email && formErrors.email ? "border-red-500" : ""}
                     />
+                    {formTouched.email && formErrors.email && (
+                      <p className="text-sm text-red-500 mt-1">{formErrors.email}</p>
+                    )}
                   </div>
                   
                   <div className="space-y-2">
@@ -305,11 +439,15 @@ const BookingPage = () => {
                     <Input
                       id="phone"
                       name="phone"
-                      placeholder="Enter your phone number"
+                      placeholder="Enter your 10-digit phone number"
                       value={formData.phone}
                       onChange={handleInputChange}
                       required
+                      className={formTouched.phone && formErrors.phone ? "border-red-500" : ""}
                     />
+                    {formTouched.phone && formErrors.phone && (
+                      <p className="text-sm text-red-500 mt-1">{formErrors.phone}</p>
+                    )}
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -341,22 +479,29 @@ const BookingPage = () => {
                         value={formData.idNumber}
                         onChange={handleInputChange}
                         required
+                        className={formTouched.idNumber && formErrors.idNumber ? "border-red-500" : ""}
                       />
+                      {formTouched.idNumber && formErrors.idNumber && (
+                        <p className="text-sm text-red-500 mt-1">{formErrors.idNumber}</p>
+                      )}
                     </div>
                   </div>
                   
-                  <div className="text-sm text-muted-foreground">
-                    {visitors > 1 && (
-                      <p className="mb-2">You are booking for {visitors} visitors. Only primary visitor details are required at this stage.</p>
-                    )}
-                    <p>ID proof will be required at the time of entry.</p>
+                  <div className="text-sm bg-green-50 border border-green-200 p-3 rounded-md flex items-start text-green-800">
+                    <CheckCircle className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+                    <div>
+                      {visitors > 1 && (
+                        <p className="mb-2">You are booking for {visitors} visitors. Only primary visitor details are required at this stage.</p>
+                      )}
+                      <p>ID proof will be required at the time of entry.</p>
+                    </div>
                   </div>
                 </CardContent>
                 <CardFooter>
                   <Button 
                     type="submit" 
                     className="w-full" 
-                    disabled={pass.availableSlots === 0}
+                    disabled={pass.availableSlots === 0 || Object.keys(formErrors).length > 0}
                   >
                     {pass.availableSlots === 0 ? 'No Slots Available' : 'Continue to Payment'}
                   </Button>

@@ -5,13 +5,35 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Calendar, CreditCard, FileText, Shield, Clock, Heart, Globe, Video } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
+  const { toast } = useToast();
+
+  const showWelcomeToast = () => {
+    toast({
+      title: "Welcome to Baba Baidyanath Dham",
+      description: "Explore our temple services and book your temple pass for a divine experience.",
+      duration: 5000,
+    });
+  };
+
+  React.useEffect(() => {
+    // Show welcome toast when page loads
+    const hasSeenWelcome = sessionStorage.getItem('hasSeenWelcome');
+    if (!hasSeenWelcome) {
+      setTimeout(() => {
+        showWelcomeToast();
+        sessionStorage.setItem('hasSeenWelcome', 'true');
+      }, 1500);
+    }
+  }, []);
+
   return (
     <div className="pt-20">
-      {/* Hero Section */}
+      {/* Hero Section with Shiv and Parvati Background */}
       <section className="py-16 md:py-24 relative overflow-hidden rounded-xl">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1492321936769-b49830bc1d1e')] bg-cover bg-center opacity-20 z-0"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518495973542-4542c06a5843')] bg-cover bg-center opacity-20 z-0"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-primary/40 to-primary/10 z-0"></div>
         <div className="container mx-auto text-center max-w-4xl relative z-10">
           <motion.h1 
@@ -36,10 +58,33 @@ const Index = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <Button asChild size="lg" className="rounded-full px-8">
+            <Button 
+              asChild 
+              size="lg" 
+              className="rounded-full px-8"
+              onClick={() => {
+                toast({
+                  title: "Pass Booking",
+                  description: "Redirecting you to our secure pass booking page.",
+                  duration: 3000,
+                });
+              }}
+            >
               <Link to="/passes">Book Temple Pass</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full px-8">
+            <Button 
+              asChild 
+              size="lg" 
+              variant="outline" 
+              className="rounded-full px-8"
+              onClick={() => {
+                toast({
+                  title: "Live Darshan",
+                  description: "Connecting you to live darshan stream...",
+                  duration: 3000,
+                });
+              }}
+            >
               <a href="#live-darshan">Live Darshan</a>
             </Button>
           </motion.div>
@@ -98,6 +143,19 @@ const Index = () => {
                   <Video className="h-20 w-20 text-muted-foreground/50 mx-auto mb-4" />
                   <p className="text-muted-foreground">Live stream will appear here during temple hours</p>
                   <p className="text-sm text-muted-foreground/70 mt-2">9:00 AM - 7:00 PM IST</p>
+                  <Button 
+                    variant="outline" 
+                    className="mt-4"
+                    onClick={() => {
+                      toast({
+                        title: "Live Darshan Alert",
+                        description: "We'll notify you when the live stream begins.",
+                        duration: 3000,
+                      });
+                    }}
+                  >
+                    Notify Me When Live
+                  </Button>
                 </div>
               </div>
             </div>
@@ -181,7 +239,18 @@ const Index = () => {
               <p className="text-lg text-muted-foreground mb-8">
                 Book your Babadham Mandir pass today and ensure a smooth, hassle-free visit to this sacred place.
               </p>
-              <Button asChild size="lg" className="rounded-full px-8">
+              <Button 
+                asChild 
+                size="lg" 
+                className="rounded-full px-8"
+                onClick={() => {
+                  toast({
+                    title: "Let's Start Your Spiritual Journey",
+                    description: "Taking you to our booking page...",
+                    duration: 3000,
+                  });
+                }}
+              >
                 <Link to="/passes">Book Now</Link>
               </Button>
             </div>
