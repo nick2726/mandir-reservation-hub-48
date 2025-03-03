@@ -13,7 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background font-sans">
       <Navbar />
       <main className="flex-grow">
         <AnimatePresence mode="wait">
