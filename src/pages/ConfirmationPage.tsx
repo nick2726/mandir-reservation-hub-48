@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Calendar, Download, Home, Share2, Smartphone, Mail, Check } from 'lucide-react';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useToast } from '@/components/ui/use-toast';
@@ -270,7 +270,7 @@ const ConfirmationPage = () => {
               
               <div className="p-4 space-y-4">
                 <div className="flex justify-center">
-                  <QRCode 
+                  <QRCodeSVG 
                     value={`BABADHAM-${bookingId}`} 
                     size={150} 
                     level="H"
