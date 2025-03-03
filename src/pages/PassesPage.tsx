@@ -7,93 +7,18 @@ import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { motion } from 'framer-motion';
-import { CalendarIcon, FilterIcon, Users } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CalendarIcon, FilterIcon, Users, Clock } from 'lucide-react';
 import { format } from 'date-fns';
-
-// Mock data for passes
-const mockPasses = [
-  {
-    id: 1,
-    type: "Standard",
-    date: new Date('2023-08-05'),
-    price: 500,
-    availableSlots: 45,
-    totalSlots: 100,
-    description: "Standard entry pass for Babadham Mandir. Valid for the selected date only.",
-  },
-  {
-    id: 2,
-    type: "Premium",
-    date: new Date('2023-08-05'),
-    price: 1000,
-    availableSlots: 15,
-    totalSlots: 30,
-    description: "Premium pass with priority entry and special darshan. Valid for the selected date only.",
-  },
-  {
-    id: 3,
-    type: "Standard",
-    date: new Date('2023-08-06'),
-    price: 500,
-    availableSlots: 60,
-    totalSlots: 100,
-    description: "Standard entry pass for Babadham Mandir. Valid for the selected date only.",
-  },
-  {
-    id: 4,
-    type: "Premium",
-    date: new Date('2023-08-06'),
-    price: 1000,
-    availableSlots: 20,
-    totalSlots: 30,
-    description: "Premium pass with priority entry and special darshan. Valid for the selected date only.",
-  },
-  {
-    id: 5,
-    type: "Standard",
-    date: new Date('2023-08-07'),
-    price: 500,
-    availableSlots: 75,
-    totalSlots: 100,
-    description: "Standard entry pass for Babadham Mandir. Valid for the selected date only.",
-  },
-  {
-    id: 6,
-    type: "Premium",
-    date: new Date('2023-08-07'),
-    price: 1000,
-    availableSlots: 25,
-    totalSlots: 30,
-    description: "Premium pass with priority entry and special darshan. Valid for the selected date only.",
-  },
-];
-
-interface Pass {
-  id: number;
-  type: string;
-  date: Date;
-  price: number;
-  availableSlots: number;
-  totalSlots: number;
-  description: string;
-}
+import { usePassData, Pass, getPassStatus } from '@/hooks/usePassData';
+import { useToast } from '@/hooks/use-toast';
 
 const PassesPage = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const { passes, isLoading } = usePassData();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [passes, setPasses] = useState<Pass[]>([]);
   const [filteredPasses, setFilteredPasses] = useState<Pass[]>([]);
-  
-  useEffect(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setPasses(mockPasses);
-      setFilteredPasses(mockPasses);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+  const { toast } = useToast();
   
   useEffect(() => {
     // Filter passes based on selected date and type
@@ -129,6 +54,12 @@ const PassesPage = () => {
         >
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Available Passes</h1>
           <p className="text-muted-foreground mb-8">Browse and book your Babadham Mandir passes</p>
+          
+          {/* Real-time indicator */}
+          <div className="flex items-center mb-4 text-sm text-muted-foreground">
+            <div className="mr-2 h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+            <span>Showing real-time availability</span>
+          </div>
           
           {/* Filters */}
           <div className="flex flex-wrap gap-4 mb-8 items-center">
@@ -214,16 +145,20 @@ const PassesPage = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredPasses.map((pass, index) => (
-                    <motion.div
-                      key={pass.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
-                    >
-                      <PassCard pass={pass} />
-                    </motion.div>
-                  ))}
+                  <AnimatePresence>
+                    {filteredPasses.map((pass, index) => (
+                      <motion.div
+                        key={pass.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.4, delay: index * 0.1 }}
+                        className={pass.status === 'sold_out' ? 'opacity-70' : ''}
+                      >
+                        <PassCard pass={pass} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               )}
             </>
@@ -240,6 +175,26 @@ interface PassCardProps {
 
 const PassCard: React.FC<PassCardProps> = ({ pass }) => {
   const availability = (pass.availableSlots / pass.totalSlots) * 100;
+  const { toast } = useToast();
+  
+  // Show notification when availability changes
+  useEffect(() => {
+    if (pass.lastUpdated && (Date.now() - pass.lastUpdated.getTime() < 2000)) {
+      if (pass.availableSlots === 0) {
+        toast({
+          title: `${pass.type} Pass sold out!`,
+          description: `For ${format(pass.date, 'MMMM d, yyyy')}`,
+          variant: "destructive",
+        });
+      } else if (pass.availableSlots <= 5) {
+        toast({
+          title: `${pass.type} Pass almost sold out!`,
+          description: `Only ${pass.availableSlots} slots left for ${format(pass.date, 'MMMM d, yyyy')}`,
+          variant: "destructive",
+        });
+      }
+    }
+  }, [pass, toast]);
   
   return (
     <Card className="h-full flex flex-col overflow-hidden hover:shadow-md transition-all">
@@ -270,6 +225,14 @@ const PassCard: React.FC<PassCardProps> = ({ pass }) => {
             </span>
           </div>
           
+          {/* Real-time status indicator */}
+          {pass.lastUpdated && (Date.now() - pass.lastUpdated.getTime() < 5000) && (
+            <div className="flex items-center text-xs text-amber-600 animate-pulse">
+              <Clock className="h-3 w-3 mr-1" />
+              <span>Recently updated</span>
+            </div>
+          )}
+          
           <div className="w-full bg-secondary rounded-full h-2">
             <div 
               className={`h-2 rounded-full ${
@@ -278,11 +241,30 @@ const PassCard: React.FC<PassCardProps> = ({ pass }) => {
               style={{ width: `${availability}%` }}
             />
           </div>
+          
+          {/* Status badges */}
+          {pass.status === 'limited' && (
+            <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200">
+              Limited Availability
+            </Badge>
+          )}
+          
+          {pass.status === 'sold_out' && (
+            <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200">
+              Sold Out
+            </Badge>
+          )}
         </div>
       </CardContent>
       <CardFooter>
-        <Button asChild className="w-full">
-          <Link to={`/booking/${pass.id}`}>Book Now</Link>
+        <Button 
+          asChild 
+          className="w-full" 
+          disabled={pass.availableSlots === 0}
+        >
+          <Link to={`/booking/${pass.id}`}>
+            {pass.availableSlots === 0 ? 'Sold Out' : 'Book Now'}
+          </Link>
         </Button>
       </CardFooter>
     </Card>

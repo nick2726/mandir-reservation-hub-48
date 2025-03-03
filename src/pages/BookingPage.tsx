@@ -8,66 +8,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, CalendarIcon, InfoIcon, Users } from 'lucide-react';
+import { ArrowLeft, CalendarIcon, InfoIcon, Users, Clock, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
-import { useToast } from '@/components/ui/use-toast';
-
-// Mock pass data lookup (typically would be fetched from an API)
-const mockPassesData = [
-  {
-    id: 1,
-    type: "Standard",
-    date: new Date('2023-08-05'),
-    price: 500,
-    availableSlots: 45,
-    totalSlots: 100,
-    description: "Standard entry pass for Babadham Mandir. Valid for the selected date only.",
-  },
-  {
-    id: 2,
-    type: "Premium",
-    date: new Date('2023-08-05'),
-    price: 1000,
-    availableSlots: 15,
-    totalSlots: 30,
-    description: "Premium pass with priority entry and special darshan. Valid for the selected date only.",
-  },
-  {
-    id: 3,
-    type: "Standard",
-    date: new Date('2023-08-06'),
-    price: 500,
-    availableSlots: 60,
-    totalSlots: 100,
-    description: "Standard entry pass for Babadham Mandir. Valid for the selected date only.",
-  },
-  {
-    id: 4,
-    type: "Premium",
-    date: new Date('2023-08-06'),
-    price: 1000,
-    availableSlots: 20,
-    totalSlots: 30,
-    description: "Premium pass with priority entry and special darshan. Valid for the selected date only.",
-  },
-];
-
-interface Pass {
-  id: number;
-  type: string;
-  date: Date;
-  price: number;
-  availableSlots: number;
-  totalSlots: number;
-  description: string;
-}
+import { useToast } from '@/hooks/use-toast';
+import { usePassData } from '@/hooks/usePassData';
 
 const BookingPage = () => {
   const { passId } = useParams<{ passId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { getPassById, bookPass, isLoading: passDataLoading } = usePassData();
   
-  const [pass, setPass] = useState<Pass | null>(null);
+  const [pass, setPass] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [visitors, setVisitors] = useState<number>(1);
   const [formData, setFormData] = useState({
@@ -78,12 +30,14 @@ const BookingPage = () => {
     idNumber: '',
   });
   
+  // Setup real-time pass updates
   useEffect(() => {
-    // Simulate API fetch
-    setTimeout(() => {
-      const foundPass = mockPassesData.find(p => p.id === Number(passId));
-      if (foundPass) {
-        setPass(foundPass);
+    if (!passDataLoading && passId) {
+      const currentPass = getPassById(Number(passId));
+      
+      if (currentPass) {
+        setPass(currentPass);
+        setLoading(false);
       } else {
         toast({
           title: "Pass not found",
@@ -92,9 +46,34 @@ const BookingPage = () => {
         });
         navigate('/passes');
       }
-      setLoading(false);
-    }, 800);
-  }, [passId, navigate, toast]);
+    }
+  }, [passId, navigate, toast, passDataLoading, getPassById]);
+  
+  // Setup an interval to check for pass updates
+  useEffect(() => {
+    if (!passId) return;
+    
+    const interval = setInterval(() => {
+      const updatedPass = getPassById(Number(passId));
+      if (updatedPass) {
+        setPass(updatedPass);
+        
+        // If not enough slots available for current visitor count
+        if (updatedPass.availableSlots < visitors) {
+          const newVisitorCount = Math.max(1, updatedPass.availableSlots);
+          setVisitors(newVisitorCount);
+          
+          toast({
+            title: "Availability changed",
+            description: `Only ${updatedPass.availableSlots} slots available. We've adjusted your booking.`,
+            variant: "destructive",
+          });
+        }
+      }
+    }, 2000);
+    
+    return () => clearInterval(interval);
+  }, [passId, visitors, getPassById, toast]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -126,6 +105,20 @@ const BookingPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check if pass is still available
+    const currentPass = getPassById(Number(passId));
+    if (!currentPass || currentPass.availableSlots < visitors) {
+      toast({
+        title: "Availability changed",
+        description: "The pass availability has changed. Please review your booking.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Book the pass (reduce available slots)
+    bookPass(Number(passId), visitors);
+    
     // Generate a mock booking ID
     const bookingId = Math.floor(100000 + Math.random() * 900000);
     
@@ -133,7 +126,7 @@ const BookingPage = () => {
     navigate(`/payment/${bookingId}`);
   };
   
-  if (loading) {
+  if (loading || passDataLoading) {
     return (
       <div className="pt-24 container">
         <div className="flex justify-center items-center h-[60vh]">
@@ -178,6 +171,22 @@ const BookingPage = () => {
         <h1 className="text-3xl font-bold mb-2">Complete Your Booking</h1>
         <p className="text-muted-foreground mb-8">Enter visitor information and confirm your reservation</p>
         
+        {/* Real-time indicator */}
+        <div className="flex items-center mb-4 text-sm text-muted-foreground">
+          <div className="mr-2 h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+          <span>Real-time availability updates active</span>
+        </div>
+        
+        {pass.availableSlots <= 5 && (
+          <div className="mb-6 p-3 border border-amber-200 bg-amber-50 rounded-md flex items-center text-amber-800">
+            <AlertTriangle className="h-5 w-5 mr-2" />
+            <div>
+              <p className="font-medium">Limited availability!</p>
+              <p className="text-sm">Only {pass.availableSlots} slots left for this pass</p>
+            </div>
+          </div>
+        )}
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Order Summary */}
           <div className="md:col-span-1">
@@ -193,6 +202,14 @@ const BookingPage = () => {
                     <CalendarIcon className="h-4 w-4 mr-2" />
                     <span>{format(pass.date, 'EEEE, MMMM d, yyyy')}</span>
                   </div>
+                  
+                  {/* Real-time update indicator */}
+                  {pass.lastUpdated && (Date.now() - pass.lastUpdated.getTime() < 5000) && (
+                    <div className="flex items-center text-xs text-amber-600 mt-2 animate-pulse">
+                      <Clock className="h-3 w-3 mr-1" />
+                      <span>Availability recently updated</span>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex justify-between items-center">
@@ -232,6 +249,13 @@ const BookingPage = () => {
                 <div className="flex justify-between items-center font-semibold">
                   <span>Total</span>
                   <span>₹{pass.price * visitors}</span>
+                </div>
+                
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Available slots</span>
+                  <span className={`font-medium ${pass.availableSlots <= 5 ? 'text-amber-600' : ''}`}>
+                    {pass.availableSlots} of {pass.totalSlots}
+                  </span>
                 </div>
                 
                 <div className="text-sm text-muted-foreground bg-secondary/50 p-3 rounded-md flex items-start">
@@ -329,7 +353,13 @@ const BookingPage = () => {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button type="submit" className="w-full">Continue to Payment</Button>
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={pass.availableSlots === 0}
+                  >
+                    {pass.availableSlots === 0 ? 'No Slots Available' : 'Continue to Payment'}
+                  </Button>
                 </CardFooter>
               </form>
             </Card>
