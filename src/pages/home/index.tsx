@@ -5,13 +5,10 @@ import { useToast } from '@/hooks/use-toast';
 // Import sections from the new directory structure
 import HeroSection from './sections/HeroSection';
 import QuickInfoSection from './sections/QuickInfoSection';
-import AboutSection from './sections/AboutSection';
-import LiveDarshanSection from './sections/LiveDarshanSection';
-import TempleServicesSection from './sections/TempleServicesSection';
-import BookingProcessSection from './sections/BookingProcessSection';
+import BabaInfoSection from './sections/BabaInfoSection';
 import CTASection from './sections/CTASection';
 
-const Index = () => {
+const DivineDarshan = () => {
   const { toast } = useToast();
 
   React.useEffect(() => {
@@ -21,25 +18,22 @@ const Index = () => {
       setTimeout(() => {
         toast({
           title: "Welcome to Baba Baidyanath Dham",
-          description: "Explore our temple services and book your temple pass for a divine experience.",
+          description: "Explore the divine journey at the sacred Jyotirlinga temple.",
           duration: 5000,
         });
         sessionStorage.setItem('hasSeenWelcome', 'true');
       }, 1500);
     }
-  }, []);
+  }, [toast]);
 
   return (
     <div className="pt-20">
       <HeroSection />
       <QuickInfoSection />
-      <AboutSection />
-      <LiveDarshanSection />
-      <TempleServicesSection />
-      <BookingProcessSection />
+      <BabaInfoSection />
       <CTASection />
     </div>
   );
 };
 
-export default Index;
+export default DivineDarshan;

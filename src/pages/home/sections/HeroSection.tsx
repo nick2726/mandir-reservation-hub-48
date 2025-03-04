@@ -22,7 +22,7 @@ const HeroSection: React.FC = () => {
           className="mb-6"
         >
           <Badge variant="outline" className="bg-white/80 text-primary px-3 py-1 mb-4 backdrop-blur-sm">
-            Sacred Journey Awaits
+            Divine Journey Awaits
           </Badge>
         </motion.div>
         <motion.h1 
@@ -31,7 +31,7 @@ const HeroSection: React.FC = () => {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent sm:text-5xl"
         >
-          Baba Baidyanath Dham
+          Experience Divinity at Baba Baidyanath
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
@@ -39,7 +39,7 @@ const HeroSection: React.FC = () => {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="text-xl text-foreground mb-8 max-w-2xl mx-auto"
         >
-          Experience the divine presence at one of India's most sacred Jyotirlingas. Book your temple pass today for a blessed darshan.
+          One of India's most sacred Jyotirlingas awaits you. Begin your spiritual journey at the divine abode of Lord Shiva.
         </motion.p>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -60,7 +60,7 @@ const HeroSection: React.FC = () => {
             }}
           >
             <Link to="/passes" className="flex items-center gap-2">
-              <span>Book Temple Pass</span>
+              <span>Book Divine Visit</span>
               <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
               <span className="absolute inset-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 z-[-1]"></span>
             </Link>
@@ -78,11 +78,11 @@ const HeroSection: React.FC = () => {
               });
             }}
           >
-            <a href="#live-darshan" className="flex items-center gap-2">
+            <Link to="/live-darshan" className="flex items-center gap-2">
               <Video className="h-4 w-4 group-hover:text-primary transition-colors" />
-              <span>Live Darshan</span>
+              <span>Virtual Darshan</span>
               <span className="absolute inset-0 w-full h-full bg-primary/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 z-[-1]"></span>
-            </a>
+            </Link>
           </Button>
         </motion.div>
       </div>

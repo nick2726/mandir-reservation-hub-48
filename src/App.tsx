@@ -13,6 +13,8 @@ import BookingPage from "./pages/BookingPage";
 import PaymentPage from "./pages/PaymentPage";
 import ConfirmationPage from "./pages/ConfirmationPage";
 import ProfilePage from "./pages/ProfilePage";
+import LiveDarshanPage from "./pages/live-darshan";
+import ServicesPage from "./pages/services";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/payment/:bookingId" element={<Layout><PaymentPage /></Layout>} />
           <Route path="/confirmation/:bookingId" element={<Layout><ConfirmationPage /></Layout>} />
           <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
+          <Route path="/live-darshan" element={<Layout><LiveDarshanPage /></Layout>} />
+          <Route path="/services" element={<Layout><ServicesPage /></Layout>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

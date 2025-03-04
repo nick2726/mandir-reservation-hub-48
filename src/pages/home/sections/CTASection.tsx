@@ -16,29 +16,43 @@ const CTASection: React.FC = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl -mr-32 -mt-32 z-0"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -ml-32 -mb-32 z-0"></div>
           <div className="relative z-10 max-w-3xl">
-            <Badge className="mb-4">Ready to Visit?</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-orange-500 to-amber-400 bg-clip-text text-transparent">Ready to plan your spiritual journey?</h2>
+            <Badge className="mb-4">Begin Your Pilgrimage</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-orange-500 to-amber-400 bg-clip-text text-transparent">Secure Your Divine Encounter</h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Book your Babadham Mandir pass today and ensure a smooth, hassle-free visit to this sacred place.
+              Book your Baba Baidyanath Dham pass today for a seamless, spiritual experience at this sacred Jyotirlinga temple.
             </p>
-            <Button 
-              asChild 
-              size="lg" 
-              className="rounded-full px-8 group relative overflow-hidden"
-              onClick={() => {
-                toast({
-                  title: "Let's Start Your Spiritual Journey",
-                  description: "Taking you to our booking page...",
-                  duration: 3000,
-                });
-              }}
-            >
-              <Link to="/passes" className="flex items-center gap-2">
-                <span>Book Now</span>
-                <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
-                <span className="absolute inset-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 z-[-1]"></span>
-              </Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button 
+                asChild 
+                size="lg" 
+                className="rounded-full px-8 group relative overflow-hidden"
+                onClick={() => {
+                  toast({
+                    title: "Begin Your Spiritual Journey",
+                    description: "Taking you to our booking page...",
+                    duration: 3000,
+                  });
+                }}
+              >
+                <Link to="/passes" className="flex items-center gap-2">
+                  <span>Book Temple Pass</span>
+                  <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                  <span className="absolute inset-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 z-[-1]"></span>
+                </Link>
+              </Button>
+              <Button 
+                asChild 
+                variant="outline"
+                size="lg" 
+                className="rounded-full px-8 group relative overflow-hidden"
+              >
+                <Link to="/live-darshan" className="flex items-center gap-2">
+                  <span>Watch Live Darshan</span>
+                  <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                  <span className="absolute inset-0 w-full h-full bg-primary/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 z-[-1]"></span>
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
