@@ -5,6 +5,7 @@ import Footer from './Footer';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
+import AIChatbox from '../chat/AIChatbox';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -32,6 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </AnimatePresence>
       </main>
       <Footer />
+      <AIChatbox />
     </div>
   );
 };
