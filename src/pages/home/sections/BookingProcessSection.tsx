@@ -2,7 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, CreditCard, FileText, Shield } from 'lucide-react';
-import FeatureCard from './FeatureCard';
+import { FeatureCard } from '../ui-components/FeatureCard';
 
 const BookingProcessSection: React.FC = () => {
   return (

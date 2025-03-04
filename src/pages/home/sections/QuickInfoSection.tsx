@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Clock, MapPin, Users } from 'lucide-react';
-import QuickInfoCard from './QuickInfoCard';
+import { QuickInfoCard } from '../ui-components/QuickInfoCard';
 
 const QuickInfoSection: React.FC = () => {
   return (

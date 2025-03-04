@@ -10,7 +10,7 @@ interface FeatureCardProps {
   stepNumber: number;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay, stepNumber }) => {
+export const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay, stepNumber }) => {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -28,5 +28,3 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, del
     </motion.div>
   );
 };
-
-export default FeatureCard;

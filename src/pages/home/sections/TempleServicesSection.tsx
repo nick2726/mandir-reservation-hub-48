@@ -2,7 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Heart, Calendar } from 'lucide-react';
-import ServiceCard from './ServiceCard';
+import { ServiceCard } from '../ui-components/ServiceCard';
 
 const TempleServicesSection: React.FC = () => {
   return (

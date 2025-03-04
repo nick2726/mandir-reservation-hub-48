@@ -9,7 +9,7 @@ interface QuickInfoCardProps {
   delay: number;
 }
 
-const QuickInfoCard: React.FC<QuickInfoCardProps> = ({ icon, title, description, delay }) => {
+export const QuickInfoCard: React.FC<QuickInfoCardProps> = ({ icon, title, description, delay }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -25,5 +25,3 @@ const QuickInfoCard: React.FC<QuickInfoCardProps> = ({ icon, title, description,
     </motion.div>
   );
 };
-
-export default QuickInfoCard;

@@ -13,7 +13,7 @@ interface ServiceCardProps {
   delay: number;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, link, delay }) => {
+export const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, link, delay }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -39,5 +39,3 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, lin
     </motion.div>
   );
 };
-
-export default ServiceCard;
