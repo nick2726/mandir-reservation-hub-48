@@ -5,13 +5,13 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Download, Home, Share2, Smartphone, Mail, Check } from 'lucide-react';
+import { Calendar, Download, Home, Share2, Smartphone, Mail, Check, QrCode, FileText } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useToast } from '@/components/ui/use-toast';
 
-// Mock booking data (typically would be fetched from an API based on bookingId)
+// Enhanced mock booking data with additional visitor information
 const mockBookingData = {
   id: '123456',
   passType: 'Premium',
@@ -19,8 +19,17 @@ const mockBookingData = {
   visitors: 2,
   pricePerPerson: 1000,
   totalAmount: 2000,
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+  visitorInfo: {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '+91 9876543210',
+    state: 'Jharkhand',
+    city: 'Deoghar',
+    priestName: 'Pandit Ramesh Kumar',
+    tokenNo: 'TK-4578',
+    idProofType: 'Aadhar Card',
+    idProofNumber: 'XXXX-XXXX-7890'
+  },
   bookingTime: new Date(),
 };
 
@@ -32,6 +41,7 @@ const ConfirmationPage = () => {
   const [loading, setLoading] = useState(true);
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const passRef = useRef<HTMLDivElement>(null);
+  const detailedPassRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Simulate API fetch for booking details
@@ -42,15 +52,15 @@ const ConfirmationPage = () => {
   }, [bookingId]);
   
   const handleDownloadPDF = async () => {
-    if (!passRef.current) return;
+    if (!detailedPassRef.current) return;
     
     toast({
       title: "Generating PDF",
-      description: "Your pass is being prepared for download...",
+      description: "Your detailed pass is being prepared for download...",
     });
     
     try {
-      const canvas = await html2canvas(passRef.current, { 
+      const canvas = await html2canvas(detailedPassRef.current, { 
         scale: 2,
         logging: false,
         useCORS: true,
@@ -71,13 +81,55 @@ const ConfirmationPage = () => {
       
       toast({
         title: "Pass Downloaded",
-        description: "Your pass has been downloaded successfully.",
+        description: "Your detailed pass has been downloaded successfully.",
       });
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast({
         title: "Download Failed",
         description: "There was an error generating your pass. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  const handleDownloadMobilePass = async () => {
+    if (!passRef.current) return;
+    
+    toast({
+      title: "Generating Mobile Pass",
+      description: "Your mobile pass is being prepared for download...",
+    });
+    
+    try {
+      const canvas = await html2canvas(passRef.current, { 
+        scale: 2,
+        logging: false,
+        useCORS: true,
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [85, 150], // Approximate dimensions for a mobile pass
+      });
+      
+      const imgWidth = 85;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save(`Babadham_MobilePass_${bookingId}.pdf`);
+      
+      toast({
+        title: "Mobile Pass Downloaded",
+        description: "Your mobile pass has been downloaded successfully.",
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Download Failed",
+        description: "There was an error generating your mobile pass. Please try again.",
         variant: "destructive",
       });
     }
@@ -196,11 +248,43 @@ const ConfirmationPage = () => {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Booked By</p>
-                      <p className="font-medium">{bookingDetails.name}</p>
+                      <p className="font-medium">{bookingDetails.visitorInfo.name}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Email</p>
-                      <p className="font-medium">{bookingDetails.email}</p>
+                      <p className="font-medium">{bookingDetails.visitorInfo.email}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+                
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Visitor Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="font-medium">{bookingDetails.visitorInfo.phone}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">State</p>
+                      <p className="font-medium">{bookingDetails.visitorInfo.state}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">City</p>
+                      <p className="font-medium">{bookingDetails.visitorInfo.city}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Priest Name</p>
+                      <p className="font-medium">{bookingDetails.visitorInfo.priestName}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Token Number</p>
+                      <p className="font-medium">{bookingDetails.visitorInfo.tokenNo}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">ID Proof</p>
+                      <p className="font-medium">{bookingDetails.visitorInfo.idProofType} ({bookingDetails.visitorInfo.idProofNumber})</p>
                     </div>
                   </div>
                 </div>
@@ -240,10 +324,15 @@ const ConfirmationPage = () => {
                   </div>
                 </div>
                 
-                <div className="text-center">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button onClick={handleDownloadMobilePass} className="mt-4">
+                    <QrCode className="mr-2 h-4 w-4" />
+                    Download Mobile Pass
+                  </Button>
+                  
                   <Button onClick={handleDownloadPDF} className="mt-4">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Pass PDF
+                    <FileText className="mr-2 h-4 w-4" />
+                    Download Detailed PDF
                   </Button>
                 </div>
                 
@@ -271,7 +360,7 @@ const ConfirmationPage = () => {
               <div className="p-4 space-y-4">
                 <div className="flex justify-center">
                   <QRCodeSVG 
-                    value={`BABADHAM-${bookingId}`} 
+                    value={`BABADHAM-${bookingId}-${bookingDetails.visitorInfo.name}-${bookingDetails.date.toISOString().split('T')[0]}`} 
                     size={150} 
                     level="H"
                     includeMargin={true}
@@ -288,7 +377,7 @@ const ConfirmationPage = () => {
                 <div className="space-y-2 text-sm">
                   <div>
                     <p className="text-muted-foreground text-xs">Visitor</p>
-                    <p className="font-medium">{bookingDetails.name}</p>
+                    <p className="font-medium">{bookingDetails.visitorInfo.name}</p>
                   </div>
                   
                   <div className="flex justify-between">
@@ -326,6 +415,125 @@ const ConfirmationPage = () => {
                   <p>Please show this pass at the entrance.</p>
                   <p>Valid ID proof required for entry.</p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Hidden detailed pass for PDF generation */}
+        <div className="hidden">
+          <div ref={detailedPassRef} className="bg-white w-[800px] p-8">
+            <div className="flex justify-between items-center border-b border-gray-200 pb-6 mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-primary">Babadham Mandir</h2>
+                <p className="text-sm text-muted-foreground">Official Entry Pass</p>
+              </div>
+              <div className="text-right">
+                <p className="font-semibold">Booking ID: {bookingId}</p>
+                <p className="text-sm text-muted-foreground">Issued: {new Date().toLocaleDateString()}</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Visitor Information</h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Full Name</p>
+                    <p className="font-medium">{bookingDetails.visitorInfo.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="font-medium">{bookingDetails.visitorInfo.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Phone</p>
+                    <p className="font-medium">{bookingDetails.visitorInfo.phone}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">State & City</p>
+                    <p className="font-medium">{bookingDetails.visitorInfo.city}, {bookingDetails.visitorInfo.state}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">ID Proof</p>
+                    <p className="font-medium">{bookingDetails.visitorInfo.idProofType} ({bookingDetails.visitorInfo.idProofNumber})</p>
+                  </div>
+                </div>
+                
+                <h3 className="text-lg font-semibold mt-6 mb-4">Temple Details</h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Priest Name</p>
+                    <p className="font-medium">{bookingDetails.visitorInfo.priestName}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Token Number</p>
+                    <p className="font-medium">{bookingDetails.visitorInfo.tokenNo}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Pass Details</h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Pass Type</p>
+                    <p className="font-medium">{bookingDetails.passType}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Date of Visit</p>
+                    <p className="font-medium">
+                      {bookingDetails.date.toLocaleDateString('en-US', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Number of Visitors</p>
+                    <p className="font-medium">{bookingDetails.visitors}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Per Person Price</p>
+                    <p className="font-medium">₹{bookingDetails.pricePerPerson}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total Amount Paid</p>
+                    <p className="font-medium">₹{bookingDetails.totalAmount}</p>
+                  </div>
+                </div>
+                
+                <div className="mt-6 flex justify-center">
+                  <div>
+                    <QRCodeSVG 
+                      value={`BABADHAM-${bookingId}-${bookingDetails.visitorInfo.name}-${bookingDetails.date.toISOString().split('T')[0]}`} 
+                      size={180} 
+                      level="H"
+                      includeMargin={true}
+                    />
+                    <p className="text-center text-sm mt-2">Scan for verification</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <div className="bg-gray-50 p-4 rounded-md">
+                <h4 className="font-semibold mb-2">Important Instructions:</h4>
+                <ul className="text-sm space-y-1">
+                  <li>• Please arrive at least 30 minutes before your scheduled visit.</li>
+                  <li>• Bring the original ID proof used during booking for verification.</li>
+                  <li>• This pass is valid only for the date mentioned above.</li>
+                  <li>• Photography may be restricted in certain areas.</li>
+                  <li>• Follow all temple guidelines and staff instructions.</li>
+                </ul>
+              </div>
+              
+              <div className="text-center mt-6 text-sm text-muted-foreground">
+                <p>Issued by Babadham Mandir Trust</p>
+                <p>For assistance, contact: +91 1234567890 | support@babadhammandir.org</p>
               </div>
             </div>
           </div>
