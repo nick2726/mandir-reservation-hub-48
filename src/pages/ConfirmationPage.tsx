@@ -10,28 +10,30 @@ import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
-// Enhanced mock booking data with additional visitor information
-const mockBookingData = {
-  id: '123456',
-  passType: 'Premium',
-  date: new Date('2023-08-05'),
-  visitors: 2,
-  pricePerPerson: 1000,
-  totalAmount: 2000,
-  visitorInfo: {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+91 9876543210',
-    state: 'Jharkhand',
-    city: 'Deoghar',
-    priestName: 'Pandit Ramesh Kumar',
-    tokenNo: 'TK-4578',
-    idProofType: 'Aadhar Card',
-    idProofNumber: 'XXXX-XXXX-7890'
-  },
-  bookingTime: new Date(),
-};
+interface VisitorInfo {
+  name: string;
+  email: string;
+  phone: string;
+  state: string;
+  city: string;
+  priestName: string;
+  tokenNo: string;
+  idProofType: string;
+  idProofNumber: string;
+}
+
+interface BookingDetails {
+  id: string;
+  passType: string;
+  date: Date;
+  visitors: number;
+  pricePerPerson: number;
+  totalAmount: number;
+  visitorInfo: VisitorInfo;
+  bookingTime: Date;
+}
 
 const ConfirmationPage = () => {
   const { bookingId } = useParams<{ bookingId: string }>();
@@ -39,16 +41,60 @@ const ConfirmationPage = () => {
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(true);
-  const [bookingDetails, setBookingDetails] = useState<any>(null);
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
   const passRef = useRef<HTMLDivElement>(null);
   const detailedPassRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Simulate API fetch for booking details
-    setTimeout(() => {
-      setBookingDetails(mockBookingData);
-      setLoading(false);
-    }, 800);
+    // Fetch booking data from Supabase or localStorage
+    const fetchBookingData = async () => {
+      try {
+        // First try to get from localStorage (for demo purposes)
+        const storedBookingData = localStorage.getItem(`booking_${bookingId}`);
+        
+        if (storedBookingData) {
+          const parsedData = JSON.parse(storedBookingData);
+          // Convert string dates back to Date objects
+          parsedData.date = new Date(parsedData.date);
+          parsedData.bookingTime = new Date(parsedData.bookingTime);
+          
+          setBookingDetails(parsedData);
+          setLoading(false);
+          return;
+        }
+        
+        // If not in localStorage, we would fetch from Supabase in a real app
+        // For demo, we'll use fallback data but with current time/date
+        const fallbackData: BookingDetails = {
+          id: bookingId || '123456',
+          passType: 'Premium',
+          date: new Date(),
+          visitors: 2,
+          pricePerPerson: 1000,
+          totalAmount: 2000,
+          visitorInfo: {
+            name: 'Your Name', // Default name if real data not available
+            email: 'your.email@example.com',
+            phone: '+91 9876543210',
+            state: 'Jharkhand',
+            city: 'Deoghar',
+            priestName: 'Pandit Ramesh Kumar',
+            tokenNo: 'TK-4578',
+            idProofType: 'Aadhar Card',
+            idProofNumber: 'XXXX-XXXX-7890'
+          },
+          bookingTime: new Date(),
+        };
+        
+        setBookingDetails(fallbackData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching booking details:", error);
+        setLoading(false);
+      }
+    };
+    
+    fetchBookingData();
   }, [bookingId]);
   
   const handleDownloadPDF = async () => {
