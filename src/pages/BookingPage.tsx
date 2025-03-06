@@ -26,6 +26,10 @@ const BookingPage = () => {
     name: '',
     email: '',
     phone: '',
+    state: '',
+    city: '',
+    priestName: '',
+    tokenNo: '',
     idType: 'aadhar',
     idNumber: '',
   });
@@ -140,6 +144,28 @@ const BookingPage = () => {
           delete newErrors[name];
         }
         break;
+      case 'state':
+        if (!value.trim()) {
+          newErrors[name] = 'State is required';
+        } else {
+          delete newErrors[name];
+        }
+        break;
+      case 'city':
+        if (!value.trim()) {
+          newErrors[name] = 'City is required';
+        } else {
+          delete newErrors[name];
+        }
+        break;
+      case 'priestName':
+        // Optional field, no validation required
+        delete newErrors[name];
+        break;
+      case 'tokenNo':
+        // Optional field, no validation required
+        delete newErrors[name];
+        break;
       case 'idNumber':
         if (!value.trim()) {
           newErrors[name] = 'ID number is required';
@@ -168,7 +194,9 @@ const BookingPage = () => {
     // Validate all fields
     let isValid = true;
     Object.entries(formData).forEach(([key, value]) => {
-      if (typeof value === 'string' && !validateField(key, value)) {
+      if (typeof value === 'string' && 
+          ['name', 'email', 'phone', 'state', 'city', 'idNumber'].includes(key) && 
+          !validateField(key, value)) {
         isValid = false;
       }
     });
@@ -402,7 +430,7 @@ const BookingPage = () => {
               <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name">Full Name*</Label>
                     <Input
                       id="name"
                       name="name"
@@ -417,42 +445,102 @@ const BookingPage = () => {
                     )}
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className={formTouched.email && formErrors.email ? "border-red-500" : ""}
-                    />
-                    {formTouched.email && formErrors.email && (
-                      <p className="text-sm text-red-500 mt-1">{formErrors.email}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      placeholder="Enter your 10-digit phone number"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                      className={formTouched.phone && formErrors.phone ? "border-red-500" : ""}
-                    />
-                    {formTouched.phone && formErrors.phone && (
-                      <p className="text-sm text-red-500 mt-1">{formErrors.phone}</p>
-                    )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address*</Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="your.email@example.com"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className={formTouched.email && formErrors.email ? "border-red-500" : ""}
+                      />
+                      {formTouched.email && formErrors.email && (
+                        <p className="text-sm text-red-500 mt-1">{formErrors.email}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone Number*</Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your 10-digit phone number"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        required
+                        className={formTouched.phone && formErrors.phone ? "border-red-500" : ""}
+                      />
+                      {formTouched.phone && formErrors.phone && (
+                        <p className="text-sm text-red-500 mt-1">{formErrors.phone}</p>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="idType">ID Type</Label>
+                      <Label htmlFor="state">State*</Label>
+                      <Input
+                        id="state"
+                        name="state"
+                        placeholder="Enter your state"
+                        value={formData.state}
+                        onChange={handleInputChange}
+                        required
+                        className={formTouched.state && formErrors.state ? "border-red-500" : ""}
+                      />
+                      {formTouched.state && formErrors.state && (
+                        <p className="text-sm text-red-500 mt-1">{formErrors.state}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="city">City*</Label>
+                      <Input
+                        id="city"
+                        name="city"
+                        placeholder="Enter your city"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                        required
+                        className={formTouched.city && formErrors.city ? "border-red-500" : ""}
+                      />
+                      {formTouched.city && formErrors.city && (
+                        <p className="text-sm text-red-500 mt-1">{formErrors.city}</p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="priestName">Priest Name (Optional)</Label>
+                      <Input
+                        id="priestName"
+                        name="priestName"
+                        placeholder="Name of your priest (if any)"
+                        value={formData.priestName}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="tokenNo">Token Number (Optional)</Label>
+                      <Input
+                        id="tokenNo"
+                        name="tokenNo"
+                        placeholder="Enter token number if available"
+                        value={formData.tokenNo}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="idType">ID Type*</Label>
                       <Select
                         defaultValue={formData.idType}
                         onValueChange={(value) => handleSelectChange('idType', value)}
@@ -471,7 +559,7 @@ const BookingPage = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="idNumber">ID Number</Label>
+                      <Label htmlFor="idNumber">ID Number*</Label>
                       <Input
                         id="idNumber"
                         name="idNumber"
@@ -493,7 +581,7 @@ const BookingPage = () => {
                       {visitors > 1 && (
                         <p className="mb-2">You are booking for {visitors} visitors. Only primary visitor details are required at this stage.</p>
                       )}
-                      <p>ID proof will be required at the time of entry.</p>
+                      <p>ID proof will be required at the time of entry. Fields marked with * are required.</p>
                     </div>
                   </div>
                 </CardContent>
