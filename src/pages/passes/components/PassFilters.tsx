@@ -100,12 +100,12 @@ const PassFilters: React.FC<PassFiltersProps> = ({
               Standard
             </Button>
             <Button
-              variant={selectedType === "Premium" ? "secondary" : "outline"}
+              variant={selectedType === "VIP" ? "secondary" : "outline"}
               size="sm"
-              onClick={() => setSelectedType("Premium")}
-              className={`${selectedType === "Premium" ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'hover:bg-amber-50/50'} transition-colors`}
+              onClick={() => setSelectedType("VIP")}
+              className={`${selectedType === "VIP" ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'hover:bg-amber-50/50'} transition-colors`}
             >
-              Premium
+              VIP
             </Button>
           </div>
         </div>

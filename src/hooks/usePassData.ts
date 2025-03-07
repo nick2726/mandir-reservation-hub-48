@@ -29,12 +29,12 @@ const mockPasses = [
   },
   {
     id: 2,
-    type: "Premium",
+    type: "VIP",
     date: new Date('2023-08-05'),
-    price: 1000,
+    price: 600,
     availableSlots: 15,
     totalSlots: 30,
-    description: "Premium pass with priority entry and special darshan. Valid for the selected date only.",
+    description: "VIP pass with priority entry and special darshan. Valid for the selected date only.",
     lastUpdated: new Date(),
   },
   {
@@ -49,12 +49,12 @@ const mockPasses = [
   },
   {
     id: 4,
-    type: "Premium",
+    type: "VIP",
     date: new Date('2023-08-06'),
-    price: 1000,
+    price: 600,
     availableSlots: 20,
     totalSlots: 30,
-    description: "Premium pass with priority entry and special darshan. Valid for the selected date only.",
+    description: "VIP pass with priority entry and special darshan. Valid for the selected date only.",
     lastUpdated: new Date(),
   },
   {
@@ -69,12 +69,12 @@ const mockPasses = [
   },
   {
     id: 6,
-    type: "Premium",
+    type: "VIP",
     date: new Date('2023-08-07'),
-    price: 1000,
+    price: 600,
     availableSlots: 25,
     totalSlots: 30,
-    description: "Premium pass with priority entry and special darshan. Valid for the selected date only.",
+    description: "VIP pass with priority entry and special darshan. Valid for the selected date only.",
     lastUpdated: new Date(),
   },
 ];

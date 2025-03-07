@@ -44,7 +44,7 @@ const PassCard: React.FC<PassCardProps> = ({ pass }) => {
             <CardTitle>{pass.type} Pass</CardTitle>
             <CardDescription>{format(pass.date, 'EEEE, MMMM d, yyyy')}</CardDescription>
           </div>
-          <Badge variant={pass.type === "Premium" ? "default" : "secondary"}>
+          <Badge variant={pass.type === "VIP" ? "default" : "secondary"}>
             {pass.type}
           </Badge>
         </div>

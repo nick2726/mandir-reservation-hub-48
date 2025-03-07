@@ -66,7 +66,7 @@ const PassesPageContent = () => {
             <Info className="h-4 w-4 text-amber-500" />
             <AlertTitle className="text-amber-700 font-medium">Plan Your Visit</AlertTitle>
             <AlertDescription className="text-amber-600">
-              For a smoother experience, we recommend booking passes at least 3 days in advance. Premium passes include priority darshan access.
+              For a smoother experience, we recommend booking passes at least 3 days in advance. VIP passes include priority darshan access.
             </AlertDescription>
           </Alert>
           
