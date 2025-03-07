@@ -10,7 +10,7 @@ import Layout from "./components/layout/Layout";
 import AuthPage from "./pages/AuthPage";
 import PassesPage from "./pages/passes";
 import BookingPage from "./pages/BookingPage";
-import PaymentPage from "./pages/PaymentPage";
+import PaymentPage from "./pages/payment";
 import ConfirmationPage from "./pages/confirmation";
 import ProfilePage from "./pages/ProfilePage";
 import LiveDarshanPage from "./pages/live-darshan";
