@@ -9,7 +9,8 @@ import {
   ChevronDown,
   Home,
   Ticket,
-  BookOpen
+  BookOpen,
+  LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -19,17 +20,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  // Mock user state - in a real app, this would come from auth context
-  const [user, setUser] = useState({
-    isLoggedIn: true,
-    name: "Rajiv Kumar",
-    avatar: ""
-  });
+  const { user, logout } = useAuth();
   
   // Handle scroll effect
   useEffect(() => {
@@ -45,6 +42,10 @@ const Navbar = () => {
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
+  
+  const handleLogout = () => {
+    logout();
+  };
   
   return (
     <header 
@@ -82,17 +83,19 @@ const Navbar = () => {
                     <span>Passes</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    <span>My Bookings</span>
-                  </Link>
-                </DropdownMenuItem>
+                {user && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      <span>My Bookings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
             
             {/* User Profile or Sign In */}
-            {user.isLoggedIn ? (
+            {user ? (
               <div className="flex items-center gap-3">
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -117,10 +120,11 @@ const Navbar = () => {
                         <span>My Profile</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <button className="flex items-center gap-2 w-full text-left">
-                        Sign Out
-                      </button>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <div className="flex items-center gap-2 w-full text-left">
+                        <LogOut className="h-4 w-4" />
+                        <span>Sign Out</span>
+                      </div>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -161,9 +165,9 @@ const Navbar = () => {
                 </div>
                 <MobileNavLink to="/" label="Home" icon={<Home size={16} />} />
                 <MobileNavLink to="/passes" label="Passes" icon={<Ticket size={16} />} />
-                <MobileNavLink to="/profile" label="My Bookings" icon={<BookOpen size={16} />} />
+                {user && <MobileNavLink to="/profile" label="My Bookings" icon={<BookOpen size={16} />} />}
                 
-                {user.isLoggedIn ? (
+                {user ? (
                   <div className="flex items-center justify-between px-4 py-3 mt-2 bg-primary/5 rounded-md">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
@@ -173,7 +177,7 @@ const Navbar = () => {
                       </Avatar>
                       <div className="text-sm font-medium">{user.name}</div>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={handleLogout}>
                       Sign Out
                     </Button>
                   </div>

@@ -15,6 +15,7 @@ import ConfirmationPage from "./pages/confirmation";
 import ProfilePage from "./pages/ProfilePage";
 import LiveDarshanPage from "./pages/live-darshan";
 import ServicesPage from "./pages/services";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
@@ -24,18 +25,20 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout><Index /></Layout>} />
-          <Route path="/auth" element={<Layout><AuthPage /></Layout>} />
-          <Route path="/passes" element={<Layout><PassesPage /></Layout>} />
-          <Route path="/booking/:passId" element={<Layout><BookingPage /></Layout>} />
-          <Route path="/payment/:bookingId" element={<Layout><PaymentPage /></Layout>} />
-          <Route path="/confirmation/:bookingId" element={<Layout><ConfirmationPage /></Layout>} />
-          <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
-          <Route path="/live-darshan" element={<Layout><LiveDarshanPage /></Layout>} />
-          <Route path="/services" element={<Layout><ServicesPage /></Layout>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Layout><Index /></Layout>} />
+            <Route path="/auth" element={<Layout><AuthPage /></Layout>} />
+            <Route path="/passes" element={<Layout><PassesPage /></Layout>} />
+            <Route path="/booking/:passId" element={<Layout><BookingPage /></Layout>} />
+            <Route path="/payment/:bookingId" element={<Layout><PaymentPage /></Layout>} />
+            <Route path="/confirmation/:bookingId" element={<Layout><ConfirmationPage /></Layout>} />
+            <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
+            <Route path="/live-darshan" element={<Layout><LiveDarshanPage /></Layout>} />
+            <Route path="/services" element={<Layout><ServicesPage /></Layout>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

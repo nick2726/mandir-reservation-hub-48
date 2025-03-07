@@ -8,43 +8,37 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AuthPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user, isLoading, login, register } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('login');
+  
+  // Redirect if already logged in
+  React.useEffect(() => {
+    if (user) {
+      navigate('/passes');
+    }
+  }, [user, navigate]);
   
   // Login form
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  const [isLoginLoading, setIsLoginLoading] = useState(false);
   
   // Register form
   const [registerName, setRegisterName] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
-  const [isRegisterLoading, setIsRegisterLoading] = useState(false);
   
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoginLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoginLoading(false);
-      
-      // For demo purposes, we'll just redirect to the passes page
-      toast({
-        title: "Logged in successfully",
-        description: "Welcome back to Babadham Pass Booking!",
-      });
-      
-      navigate('/passes');
-    }, 1000);
+    await login(loginEmail, loginPassword);
   };
   
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Simple validation
@@ -57,20 +51,18 @@ const AuthPage = () => {
       return;
     }
     
-    setIsRegisterLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsRegisterLoading(false);
-      
-      // For demo purposes, we'll just switch to the login tab
-      toast({
-        title: "Registration successful",
-        description: "Your account has been created. Please login.",
-      });
-      
+    try {
+      await register(registerName, registerEmail, registerPassword);
+      // Clear form and switch to login after successful registration
+      setRegisterName('');
+      setRegisterEmail('');
+      setRegisterPassword('');
+      setRegisterConfirmPassword('');
       setActiveTab('login');
-    }, 1500);
+    } catch (error) {
+      // Error is already handled in the register function
+      console.error(error);
+    }
   };
   
   return (
@@ -135,8 +127,8 @@ const AuthPage = () => {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button type="submit" className="w-full" disabled={isLoginLoading}>
-                    {isLoginLoading ? "Signing in..." : "Sign In"}
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Signing in..." : "Sign In"}
                   </Button>
                 </CardFooter>
               </form>
@@ -196,8 +188,8 @@ const AuthPage = () => {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button type="submit" className="w-full" disabled={isRegisterLoading}>
-                    {isRegisterLoading ? "Creating Account..." : "Create Account"}
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Creating Account..." : "Create Account"}
                   </Button>
                 </CardFooter>
               </form>
