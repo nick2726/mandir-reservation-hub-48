@@ -1,7 +1,7 @@
+
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
-
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -11,6 +11,8 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  modifiers,
+  modifiersStyles,
   ...props
 }: CalendarProps) {
   return (
@@ -31,13 +33,21 @@ function Calendar({
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
-        head_cell:
-          "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+        head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
         row: "flex w-full mt-2",
-        cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+        cell: cn(
+          "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md",
+          props.mode === "range"
+            ? "[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md"
+            : ""
+        ),
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
+          "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+          // Modified styles for availability states
+          "[&.available]:bg-green-100 [&.available]:text-green-800 [&.available]:hover:bg-green-200",
+          "[&.limited]:bg-yellow-100 [&.limited]:text-yellow-800 [&.limited]:hover:bg-yellow-200",
+          "[&.sold-out]:bg-red-100 [&.sold-out]:text-red-800 [&.sold-out]:hover:bg-red-200"
         ),
         day_range_end: "day-range-end",
         day_selected:
@@ -52,8 +62,38 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
+        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+      }}
+      modifiers={{
+        available: day => {
+          // Logic for available days (modify as needed)
+          return true;
+        },
+        limited: day => {
+          // Logic for limited availability
+          return false;
+        },
+        'sold-out': day => {
+          // Logic for sold out days
+          return false;
+        },
+        ...modifiers,
+      }}
+      modifiersStyles={{
+        available: {
+          color: '#166534', // text-green-800
+          backgroundColor: '#dcfce7', // bg-green-100
+        },
+        limited: {
+          color: '#854d0e', // text-yellow-800
+          backgroundColor: '#fef9c3', // bg-yellow-100
+        },
+        'sold-out': {
+          color: '#991b1b', // text-red-800
+          backgroundColor: '#fee2e2', // bg-red-100
+        },
+        ...modifiersStyles,
       }}
       {...props}
     />
