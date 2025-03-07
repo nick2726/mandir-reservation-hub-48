@@ -1,4 +1,3 @@
-
 export interface VisitorInfo {
   name: string;
   email: string;
@@ -11,6 +10,14 @@ export interface VisitorInfo {
   idProofNumber: string;
 }
 
+export interface AdditionalMemberInfo {
+  name: string;
+  age: number;
+  sex: 'male' | 'female' | 'other';
+  idProofType: string;
+  idProofNumber: string;
+}
+
 export interface BookingDetails {
   id: string;
   passType: string;
@@ -19,5 +26,6 @@ export interface BookingDetails {
   pricePerPerson: number;
   totalAmount: number;
   visitorInfo: VisitorInfo;
+  additionalMembers?: AdditionalMemberInfo[];
   bookingTime: Date;
 }

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -8,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, CalendarIcon, InfoIcon, Users, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CalendarIcon, InfoIcon, Users, Clock, AlertTriangle, CheckCircle, Plus, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { usePassData } from '@/hooks/usePassData';
+import type { AdditionalMemberInfo } from '@/pages/confirmation/types';
 
 const BookingPage = () => {
   const { passId } = useParams<{ passId: string }>();
@@ -28,11 +28,14 @@ const BookingPage = () => {
     phone: '',
     state: '',
     city: '',
-    priestName: '',
-    tokenNo: '',
+    priestName: '', // Now mandatory
+    tokenNo: '', // Now mandatory
     idType: 'aadhar',
     idNumber: '',
   });
+
+  const [additionalMembers, setAdditionalMembers] = useState<AdditionalMemberInfo[]>([]);
+  
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formTouched, setFormTouched] = useState<Record<string, boolean>>({});
   
@@ -111,6 +114,7 @@ const BookingPage = () => {
     validateField(name, value);
   };
   
+  // Update validation for priest name and token number
   const validateField = (name: string, value: string) => {
     const newErrors = { ...formErrors };
     
@@ -159,12 +163,21 @@ const BookingPage = () => {
         }
         break;
       case 'priestName':
-        // Optional field, no validation required
-        delete newErrors[name];
+        if (!value.trim()) {
+          newErrors[name] = 'Priest name is required';
+        } else if (value.trim().length < 3) {
+          newErrors[name] = 'Priest name must be at least 3 characters';
+        } else {
+          delete newErrors[name];
+        }
         break;
+      
       case 'tokenNo':
-        // Optional field, no validation required
-        delete newErrors[name];
+        if (!value.trim()) {
+          newErrors[name] = 'Token number is required';
+        } else {
+          delete newErrors[name];
+        }
         break;
       case 'idNumber':
         if (!value.trim()) {
@@ -182,7 +195,40 @@ const BookingPage = () => {
     setFormErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
+  const handleAddMember = () => {
+    setAdditionalMembers(prev => [...prev, {
+      name: '',
+      age: 0,
+      sex: 'male',
+      idProofType: 'aadhar',
+      idProofNumber: ''
+    }]);
+  };
+
+  const handleRemoveMember = (index: number) => {
+    setAdditionalMembers(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleMemberChange = (index: number, field: keyof AdditionalMemberInfo, value: any) => {
+    setAdditionalMembers(prev => prev.map((member, i) => {
+      if (i === index) {
+        return { ...member, [field]: value };
+      }
+      return member;
+    }));
+  };
+
+  const validateMembers = () => {
+    return additionalMembers.every(member => 
+      member.name && 
+      member.age > 0 && 
+      member.age < 120 && 
+      member.idProofNumber
+    );
+  };
+
+  // Update form validation to include additional members
   const validateForm = () => {
     // Mark all fields as touched
     const allTouched = Object.keys(formData).reduce((acc, key) => ({
@@ -195,15 +241,24 @@ const BookingPage = () => {
     let isValid = true;
     Object.entries(formData).forEach(([key, value]) => {
       if (typeof value === 'string' && 
-          ['name', 'email', 'phone', 'state', 'city', 'idNumber'].includes(key) && 
+          ['name', 'email', 'phone', 'state', 'city', 'idNumber', 'priestName', 'tokenNo'].includes(key) && 
           !validateField(key, value)) {
         isValid = false;
       }
     });
-    
+
+    if (visitors > 1 && !validateMembers()) {
+      toast({
+        title: "Additional Members Details Required",
+        description: "Please fill in all required fields for additional members.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
     return isValid;
   };
-  
+
   const handleSelectChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
     setFormTouched(prev => ({ ...prev, [name]: true }));
@@ -516,25 +571,35 @@ const BookingPage = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="priestName">Priest Name (Optional)</Label>
+                      <Label htmlFor="priestName">Priest Name*</Label>
                       <Input
                         id="priestName"
                         name="priestName"
-                        placeholder="Name of your priest (if any)"
+                        placeholder="Enter priest name"
                         value={formData.priestName}
                         onChange={handleInputChange}
+                        required
+                        className={formTouched.priestName && formErrors.priestName ? "border-red-500" : ""}
                       />
+                      {formTouched.priestName && formErrors.priestName && (
+                        <p className="text-sm text-red-500 mt-1">{formErrors.priestName}</p>
+                      )}
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="tokenNo">Token Number (Optional)</Label>
+                      <Label htmlFor="tokenNo">Token Number*</Label>
                       <Input
                         id="tokenNo"
                         name="tokenNo"
-                        placeholder="Enter token number if available"
+                        placeholder="Enter token number"
                         value={formData.tokenNo}
                         onChange={handleInputChange}
+                        required
+                        className={formTouched.tokenNo && formErrors.tokenNo ? "border-red-500" : ""}
                       />
+                      {formTouched.tokenNo && formErrors.tokenNo && (
+                        <p className="text-sm text-red-500 mt-1">{formErrors.tokenNo}</p>
+                      )}
                     </div>
                   </div>
                   
@@ -585,6 +650,118 @@ const BookingPage = () => {
                     </div>
                   </div>
                 </CardContent>
+
+      {/* Additional Members Section */}
+      {visitors > 1 && (
+        <div className="space-y-4 border-t pt-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Additional Members</h3>
+            <p className="text-sm text-muted-foreground">{additionalMembers.length} of {visitors - 1} added</p>
+          </div>
+
+          {additionalMembers.map((member, index) => (
+            <Card key={index}>
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base">Member {index + 1}</CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemoveMember(index)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Full Name*</Label>
+                    <Input
+                      value={member.name}
+                      onChange={(e) => handleMemberChange(index, 'name', e.target.value)}
+                      placeholder="Enter full name"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Age*</Label>
+                    <Input
+                      type="number"
+                      value={member.age || ''}
+                      onChange={(e) => handleMemberChange(index, 'age', parseInt(e.target.value) || 0)}
+                      placeholder="Enter age"
+                      required
+                      min="1"
+                      max="120"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Gender*</Label>
+                    <Select
+                      value={member.sex}
+                      onValueChange={(value) => handleMemberChange(index, 'sex', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>ID Proof Type*</Label>
+                    <Select
+                      value={member.idProofType}
+                      onValueChange={(value) => handleMemberChange(index, 'idProofType', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select ID type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="aadhar">Aadhar Card</SelectItem>
+                        <SelectItem value="pan">PAN Card</SelectItem>
+                        <SelectItem value="voter">Voter ID</SelectItem>
+                        <SelectItem value="driving">Driving License</SelectItem>
+                        <SelectItem value="passport">Passport</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>ID Number*</Label>
+                  <Input
+                    value={member.idProofNumber}
+                    onChange={(e) => handleMemberChange(index, 'idProofNumber', e.target.value)}
+                    placeholder="Enter ID number"
+                    required
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {additionalMembers.length < (visitors - 1) && (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleAddMember}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Member
+            </Button>
+          )}
+        </div>
+      )}
+
                 <CardFooter>
                   <Button 
                     type="submit" 
