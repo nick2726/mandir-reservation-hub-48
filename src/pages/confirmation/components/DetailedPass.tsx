@@ -52,7 +52,7 @@ export const DetailedPass: React.FC<DetailedPassProps> = ({ bookingDetails, deta
             <h3 className="text-lg font-semibold mt-6 mb-4">Temple Details</h3>
             <div className="space-y-3">
               <div>
-                <p className="text-sm text-muted-foreground">Priest Name</p>
+                <p className="text-sm text-muted-foreground">Priest/Panda Name</p>
                 <p className="font-medium">{bookingDetails.visitorInfo.priestName}</p>
               </div>
               <div>
@@ -92,6 +92,10 @@ export const DetailedPass: React.FC<DetailedPassProps> = ({ bookingDetails, deta
                 <p className="text-sm text-muted-foreground">Total Amount Paid</p>
                 <p className="font-medium">₹{bookingDetails.totalAmount}</p>
               </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Payment Method</p>
+                <p className="font-medium">{bookingDetails.paymentMethod || 'Online Payment'}</p>
+              </div>
             </div>
             
             <div className="mt-6 flex justify-center">
@@ -107,6 +111,37 @@ export const DetailedPass: React.FC<DetailedPassProps> = ({ bookingDetails, deta
             </div>
           </div>
         </div>
+
+        {/* Additional Members Section */}
+        {bookingDetails.additionalMembers && bookingDetails.additionalMembers.length > 0 && (
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Additional Members</h3>
+            <div className="grid grid-cols-1 gap-4">
+              {bookingDetails.additionalMembers.map((member, index) => (
+                <div key={index} className="border border-gray-100 rounded-md p-3 bg-gray-50">
+                  <div className="grid grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Name</p>
+                      <p className="font-medium">{member.name}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Age</p>
+                      <p className="font-medium">{member.age} years</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Gender</p>
+                      <p className="font-medium">{member.sex === 'male' ? 'Male' : member.sex === 'female' ? 'Female' : 'Other'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">ID Proof</p>
+                      <p className="font-medium">{member.idProofType} ({member.idProofNumber})</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="bg-gray-50 p-4 rounded-md">

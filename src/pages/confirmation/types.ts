@@ -1,3 +1,4 @@
+
 export interface VisitorInfo {
   name: string;
   email: string;
@@ -28,4 +29,5 @@ export interface BookingDetails {
   visitorInfo: VisitorInfo;
   additionalMembers?: AdditionalMemberInfo[];
   bookingTime: Date;
+  paymentMethod?: string; // Added paymentMethod field
 }

@@ -1,55 +1,56 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ChevronRight, Check } from 'lucide-react';
-
-// Import components
-import PaymentMethodSelector from './components/PaymentMethodSelector';
-import CardPaymentForm from './components/CardPaymentForm';
-import UpiPaymentForm from './components/UpiPaymentForm';
-import NetBankingForm from './components/NetBankingForm';
-import OrderSummary from './components/OrderSummary';
-import LoadingState from './components/LoadingState';
-import NotFoundState from './components/NotFoundState';
-
-// Import hooks
+import { ArrowLeft } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import { PaymentMethodSelector } from './components/PaymentMethodSelector';
+import { CardPaymentForm } from './components/CardPaymentForm';
+import { UpiPaymentForm } from './components/UpiPaymentForm';
+import { NetBankingForm } from './components/NetBankingForm';
+import { CashPaymentForm } from './components/CashPaymentForm';
+import { OrderSummary } from './components/OrderSummary';
+import { LoadingState } from './components/LoadingState';
+import { NotFoundState } from './components/NotFoundState';
 import { usePaymentLogic } from './hooks/usePaymentLogic';
 
-const PaymentPage: React.FC = () => {
+const PaymentPage = () => {
   const { bookingId } = useParams<{ bookingId: string }>();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
-  const {
-    loading,
-    processing,
-    bookingDetails,
-    paymentMethod,
-    setPaymentMethod,
-    cardForm,
-    handleCardInputChange,
-    handleSubmit
-  } = usePaymentLogic(bookingId);
+  const [paymentMethod, setPaymentMethod] = useState<string>('card');
+  
+  const { 
+    bookingData, 
+    loading, 
+    handleProcessPayment, 
+    isProcessing 
+  } = usePaymentLogic(bookingId, navigate, toast);
+  
+  const processPaymentWithMethod = () => {
+    // Process the payment with the selected method
+    const paymentMethodMap: Record<string, string> = {
+      'card': 'Credit/Debit Card',
+      'upi': 'UPI',
+      'netbanking': 'Net Banking',
+      'cash': 'Cash on Delivery'
+    };
+    
+    handleProcessPayment(paymentMethodMap[paymentMethod] || paymentMethod);
+  };
   
   if (loading) {
-    return (
-      <div className="pt-24 container">
-        <LoadingState />
-      </div>
-    );
+    return <LoadingState />;
   }
   
-  if (!bookingDetails) {
-    return (
-      <div className="pt-24 container">
-        <NotFoundState />
-      </div>
-    );
+  if (!bookingData) {
+    return <NotFoundState />;
   }
   
   return (
-    <div className="pt-24 container max-w-4xl">
+    <div className="pt-24 container max-w-4xl pb-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -58,72 +59,57 @@ const PaymentPage: React.FC = () => {
         <Button 
           variant="ghost" 
           className="mb-6 pl-0"
-          onClick={() => navigate(-1)}
-          disabled={processing}
+          onClick={() => window.history.back()}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
         
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Complete Payment</h1>
-            <p className="text-muted-foreground">Secure payment for your booking</p>
-          </div>
-          <div className="hidden md:flex items-center text-sm text-muted-foreground">
-            <span className="flex items-center mr-2">
-              <Check className="h-3.5 w-3.5 mr-1 text-primary" />
-              Booking Details
-            </span>
-            <ChevronRight className="h-3.5 w-3.5 mx-1" />
-            <span className="font-medium">Payment</span>
-            <ChevronRight className="h-3.5 w-3.5 mx-1" />
-            <span className="text-muted-foreground">Confirmation</span>
-          </div>
-        </div>
+        <h1 className="text-3xl font-bold mb-2">Complete Payment</h1>
+        <p className="text-muted-foreground mb-8">Choose a payment method to secure your booking</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Payment Methods */}
-          <div className="md:col-span-2 space-y-6">
-            <PaymentMethodSelector 
-              paymentMethod={paymentMethod}
-              setPaymentMethod={setPaymentMethod}
-            />
+          {/* Order Summary */}
+          <div className="md:col-span-1">
+            <OrderSummary bookingData={bookingData} />
+          </div>
+          
+          {/* Payment Forms */}
+          <div className="md:col-span-2">
+            <div className="mb-6">
+              <PaymentMethodSelector 
+                activeMethod={paymentMethod} 
+                onChange={setPaymentMethod} 
+              />
+            </div>
             
-            {/* Render payment form based on selected method */}
             {paymentMethod === 'card' && (
               <CardPaymentForm 
-                cardForm={cardForm}
-                handleCardInputChange={handleCardInputChange}
-                handleSubmit={handleSubmit}
-                processing={processing}
-                totalAmount={bookingDetails.totalAmount}
+                onSubmit={processPaymentWithMethod} 
+                isProcessing={isProcessing} 
               />
             )}
             
             {paymentMethod === 'upi' && (
               <UpiPaymentForm 
-                handleSubmit={handleSubmit}
-                processing={processing}
-                totalAmount={bookingDetails.totalAmount}
+                onSubmit={processPaymentWithMethod} 
+                isProcessing={isProcessing} 
               />
             )}
             
             {paymentMethod === 'netbanking' && (
-              <NetBankingForm
-                handleSubmit={handleSubmit}
-                processing={processing}
-                totalAmount={bookingDetails.totalAmount}
+              <NetBankingForm 
+                onSubmit={processPaymentWithMethod} 
+                isProcessing={isProcessing} 
               />
             )}
-          </div>
-          
-          {/* Order Summary */}
-          <div className="md:col-span-1">
-            <OrderSummary 
-              bookingDetails={bookingDetails}
-              bookingId={bookingId}
-            />
+            
+            {paymentMethod === 'cash' && (
+              <CashPaymentForm 
+                onSubmit={processPaymentWithMethod} 
+                isProcessing={isProcessing} 
+              />
+            )}
           </div>
         </div>
       </motion.div>
