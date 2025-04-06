@@ -49,6 +49,18 @@ const PaymentPage = () => {
     return <NotFoundState />;
   }
   
+  // Create a formatted object that matches what the OrderSummary component expects
+  const orderSummaryData = {
+    id: bookingData.id,
+    passType: bookingData.passType,
+    date: bookingData.date,
+    visitors: bookingData.visitors,
+    pricePerPerson: bookingData.pricePerPerson,
+    totalAmount: bookingData.totalAmount,
+    name: bookingData.visitorInfo?.name || '',
+    email: bookingData.visitorInfo?.email || ''
+  };
+  
   return (
     <div className="pt-24 container max-w-4xl pb-12">
       <motion.div
@@ -71,7 +83,7 @@ const PaymentPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Order Summary */}
           <div className="md:col-span-1">
-            <OrderSummary bookingDetails={bookingData} bookingId={bookingId} />
+            <OrderSummary bookingDetails={orderSummaryData} bookingId={bookingId} />
           </div>
           
           {/* Payment Forms */}

@@ -6,6 +6,13 @@ export interface PaymentFormData {
   cvv: string;
 }
 
+// Import BookingDetails from confirmation types
+import { BookingDetails } from '../confirmation/types';
+
+// PaymentData extends BookingDetails
+export type PaymentData = BookingDetails;
+
+// This is the type that OrderSummary component expects
 export interface MockBookingData {
   id: string;
   passType: string;
@@ -13,11 +20,11 @@ export interface MockBookingData {
   visitors: number;
   pricePerPerson: number;
   totalAmount: number;
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
+  // Include properties from PaymentData that OrderSummary might use
+  visitorInfo?: {
+    name: string;
+    email: string;
+  };
 }
-
-// Add PaymentData type that extends from BookingDetails in confirmation types
-import { BookingDetails } from '../confirmation/types';
-
-export type PaymentData = BookingDetails;
