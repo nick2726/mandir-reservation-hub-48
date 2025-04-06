@@ -16,3 +16,8 @@ export interface MockBookingData {
   name: string;
   email: string;
 }
+
+// Add PaymentData type that extends from BookingDetails in confirmation types
+import { BookingDetails } from '../confirmation/types';
+
+export type PaymentData = BookingDetails;

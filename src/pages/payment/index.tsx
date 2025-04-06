@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { PaymentMethodSelector } from './components/PaymentMethodSelector';
-import { CardPaymentForm } from './components/CardPaymentForm';
-import { UpiPaymentForm } from './components/UpiPaymentForm';
-import { NetBankingForm } from './components/NetBankingForm';
+import CardPaymentForm from './components/CardPaymentForm';
+import UpiPaymentForm from './components/UpiPaymentForm';
+import NetBankingForm from './components/NetBankingForm';
 import { CashPaymentForm } from './components/CashPaymentForm';
-import { OrderSummary } from './components/OrderSummary';
-import { LoadingState } from './components/LoadingState';
-import { NotFoundState } from './components/NotFoundState';
+import OrderSummary from './components/OrderSummary';
+import LoadingState from './components/LoadingState';
+import NotFoundState from './components/NotFoundState';
 import { usePaymentLogic } from './hooks/usePaymentLogic';
 
 const PaymentPage = () => {
@@ -71,7 +71,7 @@ const PaymentPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Order Summary */}
           <div className="md:col-span-1">
-            <OrderSummary bookingData={bookingData} />
+            <OrderSummary bookingDetails={bookingData} bookingId={bookingId} />
           </div>
           
           {/* Payment Forms */}
@@ -85,22 +85,36 @@ const PaymentPage = () => {
             
             {paymentMethod === 'card' && (
               <CardPaymentForm 
-                onSubmit={processPaymentWithMethod} 
-                isProcessing={isProcessing} 
+                handleSubmit={(e) => {
+                  e.preventDefault();
+                  processPaymentWithMethod();
+                }} 
+                processing={isProcessing}
+                totalAmount={bookingData.totalAmount}
+                cardForm={{cardNumber: '', cardName: '', expiryDate: '', cvv: ''}}
+                handleCardInputChange={() => {}}
               />
             )}
             
             {paymentMethod === 'upi' && (
               <UpiPaymentForm 
-                onSubmit={processPaymentWithMethod} 
-                isProcessing={isProcessing} 
+                handleSubmit={(e) => {
+                  e.preventDefault();
+                  processPaymentWithMethod();
+                }} 
+                processing={isProcessing}
+                totalAmount={bookingData.totalAmount}
               />
             )}
             
             {paymentMethod === 'netbanking' && (
               <NetBankingForm 
-                onSubmit={processPaymentWithMethod} 
-                isProcessing={isProcessing} 
+                handleSubmit={(e) => {
+                  e.preventDefault();
+                  processPaymentWithMethod();
+                }} 
+                processing={isProcessing}
+                totalAmount={bookingData.totalAmount}
               />
             )}
             

@@ -54,7 +54,8 @@ export const usePaymentLogic = (
                 idProofType: 'Aadhar Card',
                 idProofNumber: 'XXXX-XXXX-5678'
               }
-            ]
+            ],
+            bookingTime: new Date()
           };
           
           setBookingData(mockData);
