@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,7 +21,7 @@ const BabaInfoSection: React.FC = () => {
             viewport={{ once: true }}
           >
             <img 
-              src="https://images.unsplash.com/photo-1544006659-f0b21884ce1d" 
+              src="https://images.unsplash.com/photo-1643822264111-c924e213ed33" 
               alt="Baba Baidyanath Temple" 
               className="w-full h-auto rounded-2xl shadow-lg"
             />
@@ -53,12 +52,12 @@ const BabaInfoSection: React.FC = () => {
           >
             <Card className="overflow-hidden h-full border border-amber-200/20 hover:shadow-md transition-all hover:scale-[1.02]">
               <img 
-                src="https://images.unsplash.com/photo-1600000000000-000000000000" 
+                src="https://images.unsplash.com/photo-1621507492972-0c4a7a33debd" 
                 alt="Shivling at Baba Baidyanath Temple" 
                 className="w-full h-48 object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "https://images.unsplash.com/photo-1572767162983-1c2ec8721a14";
+                  target.src = "https://images.unsplash.com/photo-1621507492972-0c4a7a33debd";
                 }}
               />
               <CardContent className="p-6">
@@ -78,12 +77,12 @@ const BabaInfoSection: React.FC = () => {
           >
             <Card className="overflow-hidden h-full border border-amber-200/20 hover:shadow-md transition-all hover:scale-[1.02]">
               <img 
-                src="https://images.unsplash.com/photo-1600000000000-000000000001" 
+                src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088" 
                 alt="Temple Architecture" 
                 className="w-full h-48 object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "https://images.unsplash.com/photo-1621507492972-0c4a7a33debd";
+                  target.src = "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088";
                 }}
               />
               <CardContent className="p-6">
@@ -103,12 +102,12 @@ const BabaInfoSection: React.FC = () => {
           >
             <Card className="overflow-hidden h-full border border-amber-200/20 hover:shadow-md transition-all hover:scale-[1.02]">
               <img 
-                src="https://images.unsplash.com/photo-1600000000000-000000000002" 
+                src="https://images.unsplash.com/photo-1572767162983-1c2ec8721a14" 
                 alt="Kanwar Yatra to Baba Dham" 
                 className="w-full h-48 object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088";
+                  target.src = "https://images.unsplash.com/photo-1572767162983-1c2ec8721a14";
                 }}
               />
               <CardContent className="p-6">
@@ -152,12 +151,12 @@ const BabaInfoSection: React.FC = () => {
               className="relative"
             >
               <img 
-                src="https://images.unsplash.com/photo-1600000000000-000000000003" 
+                src="https://images.unsplash.com/photo-1572767162983-1c2ec8721a14" 
                 alt="Divine Aura of Baba Baidyanath" 
                 className="w-full h-auto rounded-xl shadow-lg"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "https://images.unsplash.com/photo-1643822264111-c924e213ed33";
+                  target.src = "https://images.unsplash.com/photo-1572767162983-1c2ec8721a14";
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-xl flex items-end">

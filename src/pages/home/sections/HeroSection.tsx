@@ -12,7 +12,7 @@ const HeroSection: React.FC = () => {
   
   return (
     <section className="py-16 md:py-24 relative overflow-hidden rounded-xl">
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1544006659-f0b21884ce1d')] bg-cover bg-center opacity-25 z-0"></div>
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1621507492972-0c4a7a33debd')] bg-cover bg-center opacity-25 z-0"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-primary/40 to-primary/10 z-0"></div>
       <div className="container mx-auto text-center max-w-4xl relative z-10">
         <motion.div 

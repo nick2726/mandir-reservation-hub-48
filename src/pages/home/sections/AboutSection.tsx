@@ -45,7 +45,7 @@ const AboutSection: React.FC = () => {
             className="lg:w-1/2 rounded-xl overflow-hidden shadow-lg group"
           >
             <img 
-              src="https://images.unsplash.com/photo-1572767162983-1c2ec8721a14" 
+              src="https://images.unsplash.com/photo-1643822264111-c924e213ed33" 
               alt="Baba Baidyanath Temple" 
               className="w-full h-auto object-cover rounded-xl transition-transform duration-700 group-hover:scale-105"
             />

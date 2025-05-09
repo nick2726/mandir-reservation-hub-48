@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import HeroSection from './sections/HeroSection';
 import QuickInfoSection from './sections/QuickInfoSection';
 import BabaInfoSection from './sections/BabaInfoSection';
+import AboutSection from './sections/AboutSection';
 import CTASection from './sections/CTASection';
 
 const DivineDarshan = () => {
@@ -30,6 +31,7 @@ const DivineDarshan = () => {
     <div className="pt-20">
       <HeroSection />
       <QuickInfoSection />
+      <AboutSection />
       <BabaInfoSection />
       <CTASection />
     </div>
