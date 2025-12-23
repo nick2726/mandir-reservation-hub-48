@@ -1,6 +1,7 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,74 +9,111 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 240 10% 3.9%;
+    /* Sacred Temple Color Palette - Warm & Traditional */
+    --background: 35 25% 97%;
+    --foreground: 25 30% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card: 40 30% 98%;
+    --card-foreground: 25 30% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover: 40 30% 98%;
+    --popover-foreground: 25 30% 12%;
 
-    --primary: 205 70% 44%;
-    --primary-foreground: 0 0% 98%;
+    /* Sacred Saffron/Gold Primary */
+    --primary: 36 90% 50%;
+    --primary-foreground: 25 30% 10%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    /* Deep Maroon Secondary */
+    --secondary: 350 45% 25%;
+    --secondary-foreground: 40 30% 95%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    /* Warm Cream Muted */
+    --muted: 38 30% 92%;
+    --muted-foreground: 25 20% 45%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    /* Temple Gold Accent */
+    --accent: 45 85% 55%;
+    --accent-foreground: 25 30% 10%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 142.1 76.2% 36.3%;
+    --border: 35 20% 85%;
+    --input: 35 20% 88%;
+    --ring: 36 90% 50%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 240 10% 3.9%;
-    --sidebar-primary: 205 70% 44%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 240 5.9% 90%;
-    --sidebar-ring: 142.1 76.2% 36.3%;
+    /* Sacred colors */
+    --temple-gold: 45 90% 50%;
+    --temple-saffron: 28 90% 55%;
+    --temple-maroon: 350 50% 30%;
+    --temple-cream: 40 35% 95%;
+    --temple-brown: 25 35% 25%;
+
+    /* Gradients */
+    --gradient-sacred: linear-gradient(135deg, hsl(36 90% 50%), hsl(45 85% 55%));
+    --gradient-temple: linear-gradient(180deg, hsl(350 45% 25%), hsl(350 50% 18%));
+    --gradient-warm: linear-gradient(180deg, hsl(35 25% 97%), hsl(38 30% 92%));
+
+    /* Shadows */
+    --shadow-sacred: 0 4px 20px -4px hsl(36 90% 50% / 0.25);
+    --shadow-warm: 0 8px 30px -8px hsl(25 30% 12% / 0.15);
+    --shadow-gold: 0 0 40px hsl(45 85% 55% / 0.3);
+
+    --sidebar-background: 40 30% 98%;
+    --sidebar-foreground: 25 30% 12%;
+    --sidebar-primary: 36 90% 50%;
+    --sidebar-primary-foreground: 25 30% 10%;
+    --sidebar-accent: 38 30% 92%;
+    --sidebar-accent-foreground: 25 30% 12%;
+    --sidebar-border: 35 20% 85%;
+    --sidebar-ring: 36 90% 50%;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 25 25% 8%;
+    --foreground: 40 30% 95%;
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --card: 25 25% 12%;
+    --card-foreground: 40 30% 95%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 25 25% 12%;
+    --popover-foreground: 40 30% 95%;
 
-    --primary: 205 70% 44%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 45 85% 55%;
+    --primary-foreground: 25 30% 10%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 350 40% 20%;
+    --secondary-foreground: 40 30% 95%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 25 20% 18%;
+    --muted-foreground: 35 15% 60%;
 
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 36 90% 50%;
+    --accent-foreground: 25 30% 10%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 142.4 71.8% 29.2%;
+    --border: 25 20% 20%;
+    --input: 25 20% 20%;
+    --ring: 45 85% 55%;
+
+    --temple-gold: 45 85% 55%;
+    --temple-saffron: 28 85% 50%;
+    --temple-maroon: 350 45% 22%;
+    --temple-cream: 40 20% 15%;
+    --temple-brown: 25 25% 12%;
+
+    --sidebar-background: 25 25% 12%;
+    --sidebar-foreground: 40 30% 95%;
+    --sidebar-primary: 45 85% 55%;
+    --sidebar-primary-foreground: 25 30% 10%;
+    --sidebar-accent: 25 20% 18%;
+    --sidebar-accent-foreground: 40 30% 95%;
+    --sidebar-border: 25 20% 20%;
+    --sidebar-ring: 45 85% 55%;
   }
 }
 
@@ -85,12 +123,41 @@
   }
   
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-body antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair;
+    @apply font-heading tracking-tight;
   }
+}
+
+/* Sacred decorative patterns */
+.sacred-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L30 60M0 30L60 30M15 15L45 45M45 15L15 45' stroke='%23d4a853' stroke-width='0.5' fill='none' opacity='0.1'/%3E%3C/svg%3E");
+}
+
+.om-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='35' stroke='%23d4a853' stroke-width='0.5' fill='none' opacity='0.08'/%3E%3Ccircle cx='40' cy='40' r='25' stroke='%23d4a853' stroke-width='0.5' fill='none' opacity='0.06'/%3E%3Ccircle cx='40' cy='40' r='15' stroke='%23d4a853' stroke-width='0.5' fill='none' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* Temple border ornaments */
+.temple-border {
+  border-image: linear-gradient(90deg, transparent, hsl(var(--primary)), transparent) 1;
+}
+
+.temple-border-gold {
+  position: relative;
+}
+
+.temple-border-gold::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary)), transparent);
 }
 
 /* Custom aspect ratio */
@@ -109,34 +176,11 @@
   bottom: 0;
 }
 
-/* Custom animations */
-.animate-fade-up {
-  opacity: 0;
-  animation: fadeUp 0.7s ease forwards;
-}
-
-.animate-fade-up-delay-1 {
-  opacity: 0;
-  animation: fadeUp 0.7s ease forwards;
-  animation-delay: 0.1s;
-}
-
-.animate-fade-up-delay-2 {
-  opacity: 0;
-  animation: fadeUp 0.7s ease forwards;
-  animation-delay: 0.2s;
-}
-
-.animate-fade-up-delay-3 {
-  opacity: 0;
-  animation: fadeUp 0.7s ease forwards;
-  animation-delay: 0.3s;
-}
-
+/* Sacred animations */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -144,24 +188,118 @@
   }
 }
 
-/* Glass morphism */
+@keyframes sacredGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.5);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.animate-fade-up-delay-1 {
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards;
+  animation-delay: 0.15s;
+}
+
+.animate-fade-up-delay-2 {
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards;
+  animation-delay: 0.3s;
+}
+
+.animate-fade-up-delay-3 {
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards;
+  animation-delay: 0.45s;
+}
+
+.animate-sacred-glow {
+  animation: sacredGlow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--primary) / 0.3),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Glass morphism - Sacred style */
 .glass {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: hsl(var(--card) / 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.5);
 }
 
 .glass-dark {
-  background: rgba(17, 17, 17, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: hsl(var(--secondary) / 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--primary) / 0.2);
+}
+
+.glass-gold {
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--accent) / 0.05));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--primary) / 0.3);
+}
+
+/* Sacred card styles */
+.sacred-card {
+  @apply relative overflow-hidden rounded-lg;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow-warm);
+}
+
+.sacred-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--primary)));
 }
 
 /* Smooth transitions */
 .page-transition {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Enhanced focus styles */
@@ -169,3 +307,27 @@
   @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
 }
 
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* Selection styling */
+::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--foreground));
+}
