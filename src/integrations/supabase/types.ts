@@ -14,7 +14,208 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      additional_visitors: {
+        Row: {
+          age: number | null
+          booking_id: string
+          created_at: string
+          id: string
+          id_proof_number: string | null
+          id_proof_type: string | null
+          name: string
+          sex: string | null
+        }
+        Insert: {
+          age?: number | null
+          booking_id: string
+          created_at?: string
+          id?: string
+          id_proof_number?: string | null
+          id_proof_type?: string | null
+          name: string
+          sex?: string | null
+        }
+        Update: {
+          age?: number | null
+          booking_id?: string
+          created_at?: string
+          id?: string
+          id_proof_number?: string | null
+          id_proof_type?: string | null
+          name?: string
+          sex?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "additional_visitors_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          booking_number: string
+          booking_status: string
+          created_at: string
+          id: string
+          id_proof_number: string | null
+          id_proof_type: string | null
+          num_visitors: number
+          pass_type_id: string | null
+          pass_type_name: string
+          payment_method: string | null
+          payment_status: string
+          price_per_person: number
+          priest_name: string | null
+          token_number: string | null
+          total_amount: number
+          updated_at: string
+          user_id: string
+          visit_date: string
+          visitor_city: string | null
+          visitor_email: string
+          visitor_name: string
+          visitor_phone: string
+          visitor_state: string | null
+        }
+        Insert: {
+          booking_number: string
+          booking_status?: string
+          created_at?: string
+          id?: string
+          id_proof_number?: string | null
+          id_proof_type?: string | null
+          num_visitors: number
+          pass_type_id?: string | null
+          pass_type_name: string
+          payment_method?: string | null
+          payment_status?: string
+          price_per_person: number
+          priest_name?: string | null
+          token_number?: string | null
+          total_amount: number
+          updated_at?: string
+          user_id: string
+          visit_date: string
+          visitor_city?: string | null
+          visitor_email: string
+          visitor_name: string
+          visitor_phone: string
+          visitor_state?: string | null
+        }
+        Update: {
+          booking_number?: string
+          booking_status?: string
+          created_at?: string
+          id?: string
+          id_proof_number?: string | null
+          id_proof_type?: string | null
+          num_visitors?: number
+          pass_type_id?: string | null
+          pass_type_name?: string
+          payment_method?: string | null
+          payment_status?: string
+          price_per_person?: number
+          priest_name?: string | null
+          token_number?: string | null
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+          visit_date?: string
+          visitor_city?: string | null
+          visitor_email?: string
+          visitor_name?: string
+          visitor_phone?: string
+          visitor_state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_pass_type_id_fkey"
+            columns: ["pass_type_id"]
+            isOneToOne: false
+            referencedRelation: "pass_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pass_types: {
+        Row: {
+          created_at: string
+          darshan_time: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          max_visitors: number
+          name: string
+          price: number
+          special_access: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          darshan_time?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_visitors?: number
+          name: string
+          price: number
+          special_access?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          darshan_time?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_visitors?: number
+          name?: string
+          price?: number
+          special_access?: string[] | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
