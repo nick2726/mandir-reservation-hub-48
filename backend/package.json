@@ -1,0 +1,15 @@
+{
+  "name": "mandir-reservation-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start:gateway": "node services/api-gateway.js",
+    "start:auth": "node services/auth-service.js",
+    "start:reservation": "node services/reservation-service.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "kafkajs": "^2.2.4"
+  }
+}

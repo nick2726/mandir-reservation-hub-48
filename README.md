@@ -67,3 +67,13 @@ Simply open [Lovable](https://lovable.dev/projects/cbbec5f7-afc2-4116-a255-ece90
 ## I want to use a custom domain - is that possible?
 
 We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+
+## Backend microservices (Kafka + JWT)
+
+A microservices backend scaffold is available in [`backend/`](backend/README.md) with:
+
+- API Gateway
+- Auth Service (JWT issuing)
+- Reservation Service (JWT-protected + Kafka producer/consumer)
+
+Follow setup instructions in `backend/README.md`.
