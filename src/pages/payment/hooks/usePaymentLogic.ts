@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { PaymentData } from '../types';
+import { emitEvent } from '@/lib/eventEmitter';
 
 export const usePaymentLogic = (
   bookingId: string | undefined, 
@@ -99,6 +100,32 @@ export const usePaymentLogic = (
       };
       
       localStorage.setItem(`booking_${bookingId}`, JSON.stringify(confirmedBooking));
+
+      // Emit events to webhook processor
+      emitEvent({
+        event_type: 'booking.created',
+        payload: {
+          booking_id: bookingId,
+          pass_type: bookingData.passType,
+          visitors: bookingData.visitors,
+          total_amount: bookingData.totalAmount,
+          visitor_name: bookingData.visitorInfo.name,
+          visitor_email: bookingData.visitorInfo.email,
+          visit_date: bookingData.date,
+        },
+        source: 'booking_flow',
+      });
+
+      emitEvent({
+        event_type: 'payment.completed',
+        payload: {
+          booking_id: bookingId,
+          payment_method: method,
+          amount: bookingData.totalAmount,
+          visitor_email: bookingData.visitorInfo.email,
+        },
+        source: 'payment_flow',
+      });
     }
     
     setIsProcessing(false);
