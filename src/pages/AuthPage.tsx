@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { z } from 'zod';
 
@@ -30,16 +30,19 @@ const registerSchema = z.object({
 const AuthPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isLoading, login, register } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('login');
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const from = (location.state as any)?.from || '/passes';
   
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate('/passes');
+      navigate(from, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, from]);
   
   // Login form
   const [loginEmail, setLoginEmail] = useState('');

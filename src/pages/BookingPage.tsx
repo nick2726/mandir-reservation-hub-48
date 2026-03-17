@@ -11,25 +11,27 @@ import { ArrowLeft, CalendarIcon, InfoIcon, Users, Clock, AlertTriangle, CheckCi
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { usePassData } from '@/hooks/usePassData';
+import { useAuth } from '@/contexts/AuthContext';
 import type { AdditionalMemberInfo } from '@/pages/confirmation/types';
 
 const BookingPage = () => {
   const { passId } = useParams<{ passId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { profile } = useAuth();
   const { getPassById, bookPass, isLoading: passDataLoading } = usePassData();
   
   const [pass, setPass] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [visitors, setVisitors] = useState<number>(1);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    state: '',
-    city: '',
-    priestName: '', // Now mandatory
-    tokenNo: '', // Now mandatory
+    name: profile?.full_name || '',
+    email: profile?.email || '',
+    phone: profile?.phone || '',
+    state: profile?.state || '',
+    city: profile?.city || '',
+    priestName: '',
+    tokenNo: '',
     idType: 'aadhar',
     idNumber: '',
   });

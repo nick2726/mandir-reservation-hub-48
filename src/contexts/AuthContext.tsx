@@ -108,7 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: `Har Har Mahadev! 🙏`,
       });
 
-      navigate('/passes');
+      // Navigation handled by AuthPage's useEffect
     } catch (error: any) {
       toast({
         title: 'Login failed',
@@ -150,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: 'Welcome to Baba Baidyanath Dham. You can now book your darshan.',
       });
 
-      navigate('/passes');
+      // Navigation handled by AuthPage's useEffect
     } catch (error: any) {
       toast({
         title: 'Registration failed',
