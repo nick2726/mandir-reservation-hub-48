@@ -96,7 +96,7 @@ Deno.serve(async (req) => {
           .from("events")
           .update({ status: "failed", processed_at: new Date().toISOString() })
           .eq("id", event.id);
-        result = { processed: false, action: `error: ${handlerError.message}` };
+        result = { processed: false, action: `error: ${(handlerError as Error).message}` };
       }
     } else {
       // No handler, mark as completed (unhandled event types are logged but not processed)

@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error("API Gateway error:", error);
     return new Response(
-      JSON.stringify({ error: "Gateway error", message: error.message }),
+      JSON.stringify({ error: "Gateway error", message: (error as Error).message }),
       { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
