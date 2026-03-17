@@ -18,6 +18,7 @@ const BookingPage = () => {
   const { passId } = useParams<{ passId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { profile } = useAuth();
   const { getPassById, bookPass, isLoading: passDataLoading } = usePassData();
   
   const [pass, setPass] = useState<any>(null);
